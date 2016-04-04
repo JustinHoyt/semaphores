@@ -1,11 +1,17 @@
+//package semaphores;
+//package com.semaphore.Driver;
+
+
+
+
 public class Car {
     private char originalDirection;
     private char targetDirection;
     private int carID;
     private double arrivalTime;
-    public Car(int carID, double arrivalTime, char originalDirection, char targetDirection){
-        this.originalDirection = originalDirection;
-        this.targetDirection = targetDirection;
+    public Car(int carID, double arrivalTime, Direction originalDirection, Direction targetDirection){
+        this.originalDirection = this.originalDirection;
+        this.targetDirection = this.targetDirection;
         this.carID = carID;
         this.arrivalTime = arrivalTime;
     }
@@ -34,26 +40,28 @@ public class Car {
         follows the rule for Green Light; if it attempts to turn right, make sure that no car is driving to
         the same lane.
     */
-    }
-    public void crossIntersection(){
-        //sleep for a second
-        /*
-            We assume that it takes a fixed time period TC to cross the intersection and print
-            out a debug message. You could use the Spin function to simulate the crossing.
-        */
-    }
-    public void exitIntersection(Car car){
-        /*
-            It is called to indicate that the caller has finished crossing the intersection and
-            should take steps to let additional cars cross the intersection.
-        */
+        System.out.println(car.toString() + " arriving");
     }
     @Override
     public String toString(){
         return "Time: " + this.arrivalTime + 
                ": Car " + this.carID + 
                " (->" + this.originalDirection +  
-               " (->" + this.targetDirection + ")";
+               " ->" + this.targetDirection + ")";
+    }
+    public void crossIntersection(){
+        /*
+            We assume that it takes a fixed time period TC to cross the intersection and print
+            out a debug message. You could use the Spin function to simulate the crossing.
+        */
+        System.out.println("A car is crossing");
+    }
+    public void exitIntersection(Car car){
+        /*
+            It is called to indicate that the caller has finished crossing the intersection and
+            should take steps to let additional cars cross the intersection.
+        */
+        System.out.println(car.toString() + " exiting");
     }
     
     public char getOriginalDirection() {

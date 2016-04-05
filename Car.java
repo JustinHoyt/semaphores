@@ -1,5 +1,7 @@
 //package com.semaphore.Driver;
 
+import java.util.concurrent.Semaphore;
+
 public class Car {
     public Enum.Direction originalDirection;
     public Enum.Direction targetDirection;
@@ -110,25 +112,25 @@ public class Car {
     }
     */
     
-    public void goStraight(intersection) {
-        int semaphoreToGet1 = (this.originalDirection + 1) % 4;
-        int semaphoreToGet2 = (this.originalDirection + 2) % 4;
+    public void goStraight(Intersection intersection) throws InterruptedException {
+        int semaphoreToGet1 = (this.originalDirection.getNumber() + 1) % 4;
+        int semaphoreToGet2 = (this.originalDirection.getNumber() + 2) % 4;
         Semaphore semaphore1 = intersection.semaphore.getSemaphore(semaphoreToGet1);
         Semaphore semaphore2 = intersection.semaphore.getSemaphore(semaphoreToGet2);
         semaphore1.acquire();
         semaphore2.acquire();
     }
-    public void goRight(intersection) {
+    public void goRight(Intersection intersection) throws InterruptedException {
         //calculate semaphore
-        int semaphoreToGet = (this.originalDirection + 2) % 4;
+        int semaphoreToGet = (this.originalDirection.getNumber() + 2) % 4;
         
         //acquire calculated semaphore
         Semaphore semaphore = intersection.semaphore.getSemaphore(semaphoreToGet);
         semaphore.acquire();
     }
-    public void goLeft(intersection) {
-        int semaphoreToGet1 = (this.originalDirection + 2) % 4;
-        int semaphoreToGet2 = this.originalDirection;
+    public void goLeft(Intersection intersection) throws InterruptedException {
+        int semaphoreToGet1 = (this.originalDirection.getNumber() + 2) % 4;
+        int semaphoreToGet2 = this.originalDirection.getNumber();
         Semaphore semaphore1 = intersection.semaphore.getSemaphore(semaphoreToGet1);
         Semaphore semaphore2 = intersection.semaphore.getSemaphore(semaphoreToGet2);
         semaphore1.acquire();

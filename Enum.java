@@ -4,17 +4,19 @@ public class Enum{
      }
     
      public enum Direction {
-        NORTH("North","N"), 
-        SOUTH("South", "S"), 
-        EAST("East", "E"), 
-        WEST("West", "W");
+        NORTH("North","N", 0), 
+        EAST("East", "E", 1), 
+        SOUTH("South", "S", 2), 
+        WEST("West", "W", 3);
         
         private String name = "North";
         private String value = "N";
+        private int number = 0;
         
-        Direction(String name, String value){
+        Direction(String name, String value, int number){
              this.name = name;
              this.value = value;
+             this.number = number;
         }
         
         public static Direction getDirection(String value) {
@@ -24,6 +26,10 @@ public class Enum{
                 }
             }
             return null;
+        }
+        
+        public int getNumber(){
+            return number;
         }
         
         public String getName(){

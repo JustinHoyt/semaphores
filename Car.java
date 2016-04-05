@@ -1,14 +1,15 @@
-//package semaphores;
 //package com.semaphore.Driver;
-
-
-
 
 public class Car {
     public Enum.Direction originalDirection;
     public Enum.Direction targetDirection;
     public int carID;
     public double arrivalTime;
+    boolean northEastLock = false;
+    boolean northWestLock = false;
+    boolean southEastLock = false;
+    boolean southWestLock = false;
+    
     public Car(int carID, double arrivalTime, Enum.Direction originalDirection, Enum.Direction targetDirection){
         this.originalDirection = originalDirection;
         this.targetDirection = targetDirection;
@@ -23,7 +24,7 @@ public class Car {
         this.arrivalTime = car.arrivalTime;
     }
     
-    public void arriveIntersection(Car car){
+    public void arriveIntersection(Intersection intersection){
     /*
         When a car arrives at the intersection, if it sees a car (with the same original
         direction) stopping in front, it should wait until the front car starts crossing (it doesn’t need to wait
@@ -40,7 +41,27 @@ public class Car {
         follows the rule for Green Light; if it attempts to turn right, make sure that no car is driving to
         the same lane.
     */
-        System.out.println(car.toString() + " arriving");
+        //if straight
+        if(originalDirection.getNumber() == targetDirection.getNumber()){
+            goStraight(intersection);
+        }
+        
+        //if right
+        if((originalDirection.getNumber() + 1) % 4 == targetDirection.getNumber()){
+            goRight(intersection);
+        }
+        
+        //if left
+        else if(originalDirection.getNumber() == (targetDirection.getNumber() + 1) % 4) {
+            goLeft(intersection);
+        }
+        
+        try {
+            intersection.northEastLock.acquire();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println(this.toString() + " arriving");
     }
     @Override
     public String toString(){
@@ -54,15 +75,63 @@ public class Car {
             We assume that it takes a fixed time period TC to cross the intersection and print
             out a debug message. You could use the Spin function to simulate the crossing.
         */
-        //Thread.sleep(2000);
+        try {
+            Thread.sleep(1000);                 //1000 milliseconds is one second.
+        } catch(InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }   
         System.out.println("Time: ?:??: Car ? (->? ->?) crossing");
     }
-    public void exitIntersection(Car car){
+    public void exitIntersection(Intersection intersection){
         /*
             It is called to indicate that the caller has finished crossing the intersection and
             should take steps to let additional cars cross the intersection.
         */
-        System.out.println(car.toString() + " exiting");
+        System.out.println(this.toString() + " exiting");
+        
+        
+    /*    
+        if(car.northEastLock == true){
+            intersection.northEastLock.release();
+            car.northEastLock = false;
+        }
+        if(car.northWestLock == true){
+            intersection.northWestLock.release();
+            car.northWestLock = false;
+        }
+        if(car.southEastLock == true){
+            intersection.southEastLock.release();
+            car.southEastLock = false;
+        }
+        if(car.southWestLock == true){
+            intersection.southWestLock.release();
+            car.southWestLock = false;
+        }
     }
+    */
     
+    public void goStraight(intersection) {
+        int semaphoreToGet1 = (this.originalDirection + 1) % 4;
+        int semaphoreToGet2 = (this.originalDirection + 2) % 4;
+        Semaphore semaphore1 = intersection.semaphore.getSemaphore(semaphoreToGet1);
+        Semaphore semaphore2 = intersection.semaphore.getSemaphore(semaphoreToGet2);
+        semaphore1.acquire();
+        semaphore2.acquire();
+    }
+    public void goRight(intersection) {
+        //calculate semaphore
+        int semaphoreToGet = (this.originalDirection + 2) % 4;
+        
+        //acquire calculated semaphore
+        Semaphore semaphore = intersection.semaphore.getSemaphore(semaphoreToGet);
+        semaphore.acquire();
+    }
+    public void goLeft(intersection) {
+        int semaphoreToGet1 = (this.originalDirection + 2) % 4;
+        int semaphoreToGet2 = this.originalDirection;
+        Semaphore semaphore1 = intersection.semaphore.getSemaphore(semaphoreToGet1);
+        Semaphore semaphore2 = intersection.semaphore.getSemaphore(semaphoreToGet2);
+        semaphore1.acquire();
+        semaphore2.acquire();
+    }
 }

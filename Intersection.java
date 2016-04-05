@@ -9,6 +9,7 @@ public class Intersection {
     public Semaphore northWestLock;
     public Semaphore southEastLock;
     public Semaphore southWestLock;
+    public HashMap<Integer, Semaphore> semaphore;
     
     public Intersection(){
         north = new Stoplight(Enum.Direction.NORTH, Enum.Color.GREEN);
@@ -19,5 +20,16 @@ public class Intersection {
         northWestLock = new Semaphore(1, true);
         southEastLock = new Semaphore(1, true);
         southWestLock = new Semaphore(1, true);
+        
+        semaphore = new HashMap<Integer, Semaphore>();
+        semaphore.put(0, northWestLock);
+        semaphore.put(1, northEastLock);
+        semaphore.put(2, southEastLock);
+        semaphore.put(3, southWestLock);
+        
+    }
+    
+    public Semaphore getSemaphore(int semaphoreNumberToGet){
+        return this.semaphore.get(semaphoreNumberToGet);
     }
 }

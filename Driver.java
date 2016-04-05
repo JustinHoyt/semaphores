@@ -5,12 +5,10 @@ import java.util.ResourceBundle;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-//package semaphores;
 
 class Driver{
      
      public static void main(String[] args) {
-          Intersection intersection = new Intersection();
           
           Car car0 = new Car(0, 1.1, Enum.Direction.NORTH, Enum.Direction.NORTH);
           Car car1 = new Car(1, 2.0, Enum.Direction.NORTH, Enum.Direction.NORTH);
@@ -52,6 +50,7 @@ class Driver{
 
 class CrossIntersection implements Runnable {
      private Car car;
+     Intersection intersection = new Intersection();
      
      public CrossIntersection(Car car){
           /*Passes in a car from runnable*/
@@ -63,10 +62,9 @@ class CrossIntersection implements Runnable {
      public void run() {
           try{
                //this is where running the thread happens
-               
-               car.arriveIntersection(car);
+               car.arriveIntersection(intersection);
                car.crossIntersection();
-               car.exitIntersection(car);
+               car.exitIntersection(intersection);
           } catch (Exception ignored) {
                System.out.println("RUN FAILED");
           }

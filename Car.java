@@ -10,8 +10,8 @@ public class Car {
     public int carID;
     public double arrivalTime;
     public Car(int carID, double arrivalTime, Enum.Direction originalDirection, Enum.Direction targetDirection){
-        this.originalDirection = this.originalDirection;
-        this.targetDirection = this.targetDirection;
+        this.originalDirection = originalDirection;
+        this.targetDirection = targetDirection;
         this.carID = carID;
         this.arrivalTime = arrivalTime;
     }

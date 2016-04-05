@@ -56,7 +56,7 @@ class CrossIntersection implements Runnable {
      public CrossIntersection(Car car){
           /*Passes in a car from runnable*/
           this.car = new Car(car);
-          System.out.println(this.car.getCarID());
+          System.out.println(this.car.CarID);
      }
      
      @Override

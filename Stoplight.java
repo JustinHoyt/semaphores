@@ -1,16 +1,10 @@
 
 public class Stoplight {
-    public enum Color {
-        RED, YELLOW, GREEN
-    }
+    public Enum.Direction direction;
+    public Enum.Color color;
     
-    public enum Direction {
-        NORTH, SOUTH, EAST, WEST
-    }
-    public Stoplight(Direction direction, Color color){
+    public Stoplight(Enum.Direction direction, Enum.Color color){
         this.direction = direction;
         this.color = color;
     }
-    public Direction direction;
-    public Color color = Color.RED;
 }

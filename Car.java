@@ -5,11 +5,11 @@
 
 
 public class Car {
-    private char originalDirection;
-    private char targetDirection;
-    private int carID;
-    private double arrivalTime;
-    public Car(int carID, double arrivalTime, Direction originalDirection, Direction targetDirection){
+    public Enum.Direction originalDirection;
+    public Enum.Direction targetDirection;
+    public int carID;
+    public double arrivalTime;
+    public Car(int carID, double arrivalTime, Enum.Direction originalDirection, Enum.Direction targetDirection){
         this.originalDirection = this.originalDirection;
         this.targetDirection = this.targetDirection;
         this.carID = carID;
@@ -44,17 +44,18 @@ public class Car {
     }
     @Override
     public String toString(){
-        return "Time: " + this.arrivalTime + 
-               ": Car " + this.carID + 
-               " (->" + this.originalDirection +  
-               " ->" + this.targetDirection + ")";
+        return "Time: " + arrivalTime + 
+               ": Car " + carID + 
+               " (->" + originalDirection.getName() +  
+               " ->" + targetDirection.getName() + ")";
     }
     public void crossIntersection(){
         /*
             We assume that it takes a fixed time period TC to cross the intersection and print
             out a debug message. You could use the Spin function to simulate the crossing.
         */
-        System.out.println("A car is crossing");
+        //Thread.sleep(2000);
+        System.out.println("Time: ?:??: Car ? (->? ->?) crossing");
     }
     public void exitIntersection(Car car){
         /*
@@ -64,35 +65,4 @@ public class Car {
         System.out.println(car.toString() + " exiting");
     }
     
-    public char getOriginalDirection() {
-        return originalDirection;
-    }
-
-    public void setOriginalDirection(char originalDirection) {
-        this.originalDirection = originalDirection;
-    }
-
-    public char getTargetDirection() {
-        return targetDirection;
-    }
-
-    public void setTargetDirection(char targetDirection) {
-        this.targetDirection = targetDirection;
-    }
-
-    public int getCarID() {
-        return carID;
-    }
-
-    public void setCarID(int carID) {
-        this.carID = carID;
-    }
-
-    public double getArrivalTime() {
-        return arrivalTime;
-    }
-
-    public void setArrivalTime(double arrivalTime) {
-        this.arrivalTime = arrivalTime;
-    }
 }

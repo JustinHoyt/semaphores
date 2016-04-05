@@ -109,31 +109,52 @@ public class Car {
             intersection.southWestLock.release();
             car.southWestLock = false;
         }
+        */
     }
-    */
+
     
-    public void goStraight(Intersection intersection) throws InterruptedException {
+    public void goStraight(Intersection intersection) {
         int semaphoreToGet1 = (this.originalDirection.getNumber() + 1) % 4;
         int semaphoreToGet2 = (this.originalDirection.getNumber() + 2) % 4;
-        Semaphore semaphore1 = intersection.semaphore.getSemaphore(semaphoreToGet1);
-        Semaphore semaphore2 = intersection.semaphore.getSemaphore(semaphoreToGet2);
-        semaphore1.acquire();
-        semaphore2.acquire();
+        Semaphore semaphore1 = intersection.semaphore.get(semaphoreToGet1);
+        Semaphore semaphore2 = intersection.semaphore.get(semaphoreToGet2);
+        try {
+            semaphore1.acquire();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        try {
+            semaphore2.acquire();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
-    public void goRight(Intersection intersection) throws InterruptedException {
+    public void goRight(Intersection intersection) {
         //calculate semaphore
         int semaphoreToGet = (this.originalDirection.getNumber() + 2) % 4;
         
         //acquire calculated semaphore
-        Semaphore semaphore = intersection.semaphore.getSemaphore(semaphoreToGet);
-        semaphore.acquire();
+        Semaphore semaphore = intersection.semaphore.get(semaphoreToGet);
+        try {
+            semaphore.acquire();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
-    public void goLeft(Intersection intersection) throws InterruptedException {
+    public void goLeft(Intersection intersection) {
         int semaphoreToGet1 = (this.originalDirection.getNumber() + 2) % 4;
         int semaphoreToGet2 = this.originalDirection.getNumber();
-        Semaphore semaphore1 = intersection.semaphore.getSemaphore(semaphoreToGet1);
-        Semaphore semaphore2 = intersection.semaphore.getSemaphore(semaphoreToGet2);
-        semaphore1.acquire();
-        semaphore2.acquire();
+        Semaphore semaphore1 = intersection.semaphore.get(semaphoreToGet1);
+        Semaphore semaphore2 = intersection.semaphore.get(semaphoreToGet2);
+        try {
+            semaphore1.acquire();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        try {
+            semaphore2.acquire();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

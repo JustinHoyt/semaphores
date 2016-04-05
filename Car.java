@@ -7,10 +7,10 @@ public class Car {
     public Enum.Direction targetDirection;
     public int carID;
     public double arrivalTime;
-    boolean northEastLock = false;
-    boolean northWestLock = false;
-    boolean southEastLock = false;
-    boolean southWestLock = false;
+    // boolean northEastLock = false;
+    // boolean northWestLock = false;
+    // boolean southEastLock = false;
+    // boolean southWestLock = false;
     
     public Car(int carID, double arrivalTime, Enum.Direction originalDirection, Enum.Direction targetDirection){
         this.originalDirection = originalDirection;
@@ -82,13 +82,43 @@ public class Car {
         } catch(InterruptedException ex) {
             Thread.currentThread().interrupt();
         }   
-        System.out.println("Time: ?:??: Car ? (->? ->?) crossing");
+        System.out.println(this.toString() + " crossing");
     }
     public void exitIntersection(Intersection intersection){
         /*
             It is called to indicate that the caller has finished crossing the intersection and
             should take steps to let additional cars cross the intersection.
         */
+        
+        //if straight
+        if(originalDirection.getNumber() == targetDirection.getNumber()){
+            int semaphoreToGet1 = (this.originalDirection.getNumber() + 1) % 4;
+            int semaphoreToGet2 = (this.originalDirection.getNumber() + 2) % 4;
+            Semaphore semaphore1 = intersection.semaphore.get(semaphoreToGet1);
+            Semaphore semaphore2 = intersection.semaphore.get(semaphoreToGet2);
+            semaphore1.release();
+            semaphore2.release();
+        }
+        
+        //if right
+        if((originalDirection.getNumber() + 1) % 4 == targetDirection.getNumber()){
+            int semaphoreToGet = (this.originalDirection.getNumber() + 2) % 4;
+        
+            //acquire calculated semaphore
+            Semaphore semaphore = intersection.semaphore.get(semaphoreToGet);
+            semaphore.release();
+        }
+        
+        //if left
+        else if(originalDirection.getNumber() == (targetDirection.getNumber() + 1) % 4) {
+            int semaphoreToGet1 = (this.originalDirection.getNumber() + 2) % 4;
+            int semaphoreToGet2 = this.originalDirection.getNumber();
+            Semaphore semaphore1 = intersection.semaphore.get(semaphoreToGet1);
+            Semaphore semaphore2 = intersection.semaphore.get(semaphoreToGet2);
+            semaphore1.release();
+            semaphore2.release();
+        }
+        
         System.out.println(this.toString() + " exiting");
         
         
@@ -109,7 +139,7 @@ public class Car {
             intersection.southWestLock.release();
             car.southWestLock = false;
         }
-        */
+    */
     }
 
     
@@ -120,6 +150,7 @@ public class Car {
         Semaphore semaphore2 = intersection.semaphore.get(semaphoreToGet2);
         try {
             semaphore1.acquire();
+            
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

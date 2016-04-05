@@ -38,6 +38,12 @@ class Driver{
           Thread CarThread7 = new Thread(runCar7);
          
           CarThread0.start();
+          try{
+               Thread.sleep(1000);
+          }
+          catch(Exception e) {
+               System.out.println("sleep failed");
+          }
           CarThread1.start();
           CarThread2.start();
           CarThread3.start();

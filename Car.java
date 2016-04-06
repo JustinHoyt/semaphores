@@ -45,13 +45,7 @@ public class Car {
         }
         System.out.println(this.toString() + " arriving");
     }
-    @Override
-    public String toString(){
-        return "Time: " + arrivalTime + 
-               ": Car " + carID + 
-               " (->" + originalDirection.getName() +  
-               " ->" + targetDirection.getName() + ")";
-    }
+    
     public void crossIntersection(){
         try {
             Thread.sleep(1000);                 //1000 milliseconds is one second.
@@ -60,83 +54,148 @@ public class Car {
         }   
         System.out.println(this.toString() + " crossing");
     }
+    
     public void exitIntersection(Intersection intersection){
         //if straight
         if(originalDirection.getNumber() == targetDirection.getNumber()){
-            int semaphoreToGet1 = (this.originalDirection.getNumber() + 1) % 4;
-            int semaphoreToGet2 = (this.originalDirection.getNumber() + 2) % 4;
-            Semaphore semaphore1 = intersection.semaphore.get(semaphoreToGet1);
-            Semaphore semaphore2 = intersection.semaphore.get(semaphoreToGet2);
-            semaphore1.release();
-            semaphore2.release();
+            String acquireOrRelease = "release";
+            aquireOrReleaseGoStraightSemaphores(acquireOrRelease, intersection);  //STRAIGHT
         }
         
         //if right
         if((originalDirection.getNumber() + 1) % 4 == targetDirection.getNumber()){
-            int semaphoreToGet = (this.originalDirection.getNumber() + 2) % 4;
-        
-            //acquire calculated semaphore
-            Semaphore semaphore = intersection.semaphore.get(semaphoreToGet);
-            semaphore.release();
+            String acquireOrRelease = "release";
+            aquireOrReleaseGoRightSemaphores(acquireOrRelease, intersection);     // RIGHT
         }
         
         //if left
         else if(originalDirection.getNumber() == (targetDirection.getNumber() + 1) % 4) {
-            int semaphoreToGet1 = (this.originalDirection.getNumber() + 2) % 4;
-            int semaphoreToGet2 = this.originalDirection.getNumber();
-            Semaphore semaphore1 = intersection.semaphore.get(semaphoreToGet1);
-            Semaphore semaphore2 = intersection.semaphore.get(semaphoreToGet2);
-            semaphore1.release();
-            semaphore2.release();
+            String acquireOrRelease = "release";
+            aquireOrReleaseGoLeftSemaphores(acquireOrRelease, intersection);      // LEFT
         }
         
         System.out.println(this.toString() + " exiting");
     }
 
-    
     public synchronized void goStraight(Intersection intersection) {
-        int semaphoreToGet1 = (this.originalDirection.getNumber() + 1) % 4;
-        int semaphoreToGet2 = (this.originalDirection.getNumber() + 2) % 4;
-        Semaphore semaphore1 = intersection.semaphore.get(semaphoreToGet1);
-        Semaphore semaphore2 = intersection.semaphore.get(semaphoreToGet2);
-        try {
-            semaphore1.acquire();
-            
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        try {
-            semaphore2.acquire();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        String acquireOrRelease = "acquire";
+        aquireOrReleaseGoStraightSemaphores(acquireOrRelease, intersection);
     }
+    
     public synchronized void goRight(Intersection intersection) {
-        //calculate semaphore
-        int semaphoreToGet = (this.originalDirection.getNumber() + 2) % 4;
-        
-        //acquire calculated semaphore
-        Semaphore innerSemaphore = intersection.innerSemaphore.get(semaphoreToGet);
-        try {
-            innerSemaphore.acquire();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        String acquireOrRelease = "acquire";
+        aquireOrReleaseGoRightSemaphores(acquireOrRelease, intersection);
+    }
+    
+    public synchronized void goLeft(Intersection intersection) {
+        String acquireOrRelease = "acquire";
+        aquireOrReleaseGoLeftSemaphores(acquireOrRelease, intersection);
+    }
+    
+    @Override
+    public String toString(){
+        return "Time: " + arrivalTime + 
+               ": Car " + carID + 
+               " (->" + originalDirection.getName() +  
+               " ->" + targetDirection.getName() + ")";
+    }
+    
+    public void aquireOrReleaseGoStraightSemaphores(String acquireOrRelease, Intersection intersection){
+        int startOuterSemaphoreToGet = (2*(this.originalDirection.getNumber()) + 4) % 8; // OUTER sem
+        int middleInnerSemaphoreToGet = (this.originalDirection.getNumber() + 2) % 4;    // INNER sem
+        int endOuterSemaphoreToGet = (2*(this.originalDirection.getNumber()) + 1) % 8;   // OUTER sem
+    
+        Semaphore startOuterSemaphore = intersection.outerSemaphore.get(startOuterSemaphoreToGet);  //OUTER
+        Semaphore middleInnerSemaphore = intersection.innerSemaphore.get(middleInnerSemaphoreToGet); // INNER
+        Semaphore endOuterSemaphore = intersection.outerSemaphore.get(endOuterSemaphoreToGet);      // OUTER
+    
+        if(acquireOrRelease.equalsIgnoreCase("acquire")){
+            try {
+                startOuterSemaphore.acquire();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            try {
+                middleInnerSemaphore.acquire();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            try {
+                endOuterSemaphore.acquire();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        else if(acquireOrRelease.equalsIgnoreCase("release")){
+            startOuterSemaphore.release();
+            middleInnerSemaphore.release();
+            endOuterSemaphore.release();
+        }
+        else{
+            System.out.println("error in acquireOrReleaseGoStraightSemaphores");
         }
     }
-    public synchronized void goLeft(Intersection intersection) {
-        int semaphoreToGet1 = (this.originalDirection.getNumber() + 2) % 4;
-        int semaphoreToGet2 = this.originalDirection.getNumber();
-        Semaphore semaphore1 = intersection.semaphore.get(semaphoreToGet1);
-        Semaphore semaphore2 = intersection.semaphore.get(semaphoreToGet2);
-        try {
-            semaphore1.acquire();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+    
+    public void aquireOrReleaseGoRightSemaphores(String acquireOrRelease, Intersection intersection){
+        int startOuterSemaphoreToGet = (2*this.originalDirection.getNumber() + 4) % 8;
+        int endOuterSemaphoreToGet = (2*this.originalDirection.getNumber() + 3) % 8;
+        
+        Semaphore startOuterSemaphore = intersection.outerSemaphore.get(startOuterSemaphoreToGet);
+        Semaphore endOuterSemaphore = intersection.outerSemaphore.get(endOuterSemaphoreToGet);
+        
+        if(acquireOrRelease.equalsIgnoreCase("acquire")){
+            try {
+                startOuterSemaphore.acquire();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            try {
+                endOuterSemaphore.acquire();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
-        try {
-            semaphore2.acquire();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        else if(acquireOrRelease.equalsIgnoreCase("release")){
+            startOuterSemaphore.release();
+            endOuterSemaphore.release();
+        }
+        else{
+            System.out.println("error in acquireOrReleaseGoRightSemaphores");
+        }
+    }
+    public void aquireOrReleaseGoLeftSemaphores(String acquireOrRelease, Intersection intersection){
+        int startOuterSemaphoreToGet = (2*this.originalDirection.getNumber() + 4) % 8;
+        int middleInnerSemaphoreToGet = this.originalDirection.getNumber();
+        int endOuterSemaphoreToGet = (2*this.originalDirection.getNumber() + 7) % 8;
+        
+        Semaphore startOuterSemaphore = intersection.outerSemaphore.get(startOuterSemaphoreToGet);
+        Semaphore middleInnerSemaphore = intersection.innerSemaphore.get(middleInnerSemaphoreToGet);
+        Semaphore endOuterSemaphore = intersection.outerSemaphore.get(endOuterSemaphoreToGet);
+
+        if(acquireOrRelease.equalsIgnoreCase("acquire")){
+            try {
+                startOuterSemaphore.acquire();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            try {
+                middleInnerSemaphore.acquire();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            try {
+                endOuterSemaphore.acquire();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        else if(acquireOrRelease.equalsIgnoreCase("release")){
+            startOuterSemaphore.release();
+            middleInnerSemaphore.release();
+            endOuterSemaphore.release();
+        }
+        else{
+            System.out.println("error in acquireOrReleaseGoStraightSemaphores");
         }
     }
 }

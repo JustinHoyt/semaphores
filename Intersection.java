@@ -23,7 +23,7 @@ public class Intersection {
     public Semaphore westExit;
     
     public HashMap<Integer, Semaphore> innerSemaphore;
-    public HashMap<Integer, Semaphore> outterSemaphore;
+    public HashMap<Integer, Semaphore> outerSemaphore;
     
     public Intersection(){
         north = new Stoplight(Enum.Direction.NORTH, Enum.Color.GREEN);
@@ -52,14 +52,14 @@ public class Intersection {
         innerSemaphore.put(2, southEastLock);
         innerSemaphore.put(3, southWestLock);
         
-        outterSemaphore = new HashMap<Integer, Semaphore>();
-        outterSemaphore.put(0, southEntrance);
-        outterSemaphore.put(1, northExit);
-        outterSemaphore.put(2, westEntrance);
-        outterSemaphore.put(3, eastExit);
-        outterSemaphore.put(4, northEntrance);
-        outterSemaphore.put(5, southExit);
-        outterSemaphore.put(6, eastEntrance);
-        outterSemaphore.put(7, westExit);
+        outerSemaphore = new HashMap<Integer, Semaphore>();
+        outerSemaphore.put(0, southEntrance);
+        outerSemaphore.put(1, northExit);
+        outerSemaphore.put(2, westEntrance);
+        outerSemaphore.put(3, eastExit);
+        outerSemaphore.put(4, northEntrance);
+        outerSemaphore.put(5, southExit);
+        outerSemaphore.put(6, eastEntrance);
+        outerSemaphore.put(7, westExit);
     }
 }

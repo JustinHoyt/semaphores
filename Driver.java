@@ -5,6 +5,7 @@ import java.util.ResourceBundle;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.Timer;
 
 class Driver{
      public static Car[] carArray;
@@ -15,12 +16,14 @@ class Driver{
      public static final int EAST = 1;
      public static final int SOUTH = 2;
      public static final int WEST = 3;
+     public static StoplightTimer stoplightTimer;
      
      public static void main(String[] args) {
           carArray = new Car[8];
           runCarArray = new Runnable[8];
           carThreadArray = new Thread[8];
           street = new Street[4];
+          stoplightTimer = new StoplightTimer();
 
           street[NORTH] = new Street(Enum.Direction.NORTH);
           street[EAST] = new Street(Enum.Direction.EAST);
@@ -28,13 +31,13 @@ class Driver{
           street[WEST] = new Street(Enum.Direction.WEST);
 
           carArray[0] = new Car(0, 1.1, Enum.Direction.NORTH, Enum.Direction.NORTH);
-          carArray[1]= new Car(1, 2.0, Enum.Direction.NORTH, Enum.Direction.NORTH);
-          carArray[2]= new Car(2, 3.3, Enum.Direction.NORTH, Enum.Direction.WEST);
-          carArray[3]= new Car(3, 3.5, Enum.Direction.SOUTH, Enum.Direction.SOUTH);
-          carArray[4]= new Car(4, 4.2, Enum.Direction.SOUTH, Enum.Direction.EAST);
-          carArray[5]= new Car(5, 4.4, Enum.Direction.NORTH, Enum.Direction.NORTH);
-          carArray[6]= new Car(6, 5.7, Enum.Direction.EAST, Enum.Direction.NORTH);
-          carArray[7]= new Car(7, 5.9, Enum.Direction.WEST, Enum.Direction.NORTH);
+          carArray[1] = new Car(1, 2.0, Enum.Direction.NORTH, Enum.Direction.NORTH);
+          carArray[2] = new Car(2, 3.3, Enum.Direction.NORTH, Enum.Direction.WEST);
+          carArray[3] = new Car(3, 3.5, Enum.Direction.SOUTH, Enum.Direction.SOUTH);
+          carArray[4] = new Car(4, 4.2, Enum.Direction.SOUTH, Enum.Direction.EAST);
+          carArray[5] = new Car(5, 4.4, Enum.Direction.NORTH, Enum.Direction.NORTH);
+          carArray[6] = new Car(6, 5.7, Enum.Direction.EAST, Enum.Direction.NORTH);
+          carArray[7] = new Car(7, 5.9, Enum.Direction.WEST, Enum.Direction.NORTH);
          
           for(int i = 0; i < 8; i++){
                runCarArray[i] = new CrossIntersection(carArray[i]);
@@ -53,7 +56,7 @@ class Driver{
                     street[WEST].carQueue.add(carThreadArray[i]);
                }
           }
-          while(!street[NORTH].carQueue.isEmpty() ||    // while queues aren't empty
+          /*while(!street[NORTH].carQueue.isEmpty() ||    // while queues aren't empty
                 !street[EAST].carQueue.isEmpty()  ||
                 !street[SOUTH].carQueue.isEmpty() ||
                 !street[WEST].carQueue.isEmpty()){
@@ -68,6 +71,19 @@ class Driver{
                     Thread westCarThread = street[WEST].carQueue.remove();
                     eastCarThread.start();
                     westCarThread.start();
+               }
+          }*/
+          
+          while(!street[NORTH].carQueue.isEmpty() ||    // while queues aren't empty
+                !street[EAST].carQueue.isEmpty()  ||
+                !street[SOUTH].carQueue.isEmpty() ||
+                !street[WEST].carQueue.isEmpty()){
+               for(int direction = 0; direction < 4; direction++){
+                    if(!street[direction].stoplight.carQueue.isEmpty() && // make sure we don't try accessing empty queue
+                        stoplightTimer.getCurrentTime()  >= street[direction].stoplight.carQueue.peek().arrivalTime){
+                         Thread threadToStart = street[direction].stoplight.carQueue.remove();
+                         threadToStart.start();
+                    }
                }
           }
      }
@@ -89,6 +105,7 @@ class CrossIntersection implements Runnable {
                //this is where running the thread happens
                
                car.arriveIntersection(intersection);
+               // if light is green then cross, otherwise wait
                car.crossIntersection();
                car.exitIntersection(intersection);
           } catch (Exception ignored) {

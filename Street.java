@@ -1,9 +1,12 @@
+import java.util.LinkedList;
+import java.util.Queue;
+
 public class Street{
     Stoplight stoplight;
-    Queue<Car> carQueue;
+    Queue<Thread> carQueue;
     
-    Street(){
-        carQueue = new LinkedList<Car>();
-        stoplight = new Stoplight();
+    Street(Enum.Direction direction){
+        carQueue = new LinkedList<Thread>();
+        stoplight = new Stoplight(direction, Enum.Color.GREEN);
     }
 }

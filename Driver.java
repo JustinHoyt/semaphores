@@ -20,7 +20,12 @@ class Driver{
           carArray = new Car[8];
           runCarArray = new Runnable[8];
           carThreadArray = new Thread[8];
-          
+
+          northStreet = new Street(Enum.Direction.NORTH);
+          eastStreet = new Street(Enum.Direction.EAST);
+          southStreet = new Street(Enum.Direction.SOUTH);
+          westStreet = new Street(Enum.Direction.WEST);
+
           carArray[0] = new Car(0, 1.1, Enum.Direction.NORTH, Enum.Direction.NORTH);
           carArray[1]= new Car(1, 2.0, Enum.Direction.NORTH, Enum.Direction.NORTH);
           carArray[2]= new Car(2, 3.3, Enum.Direction.NORTH, Enum.Direction.WEST);
@@ -30,25 +35,24 @@ class Driver{
           carArray[6]= new Car(6, 5.7, Enum.Direction.EAST, Enum.Direction.NORTH);
           carArray[7]= new Car(7, 5.9, Enum.Direction.WEST, Enum.Direction.NORTH);
          
-          for(i = 0; i < 8; i++){
+          for(int i = 0; i < 8; i++){
                runCarArray[i] = new CrossIntersection(carArray[i]);
                carThreadArray[i] = new Thread(runCarArray[i]);
                
-               if(carArray[i].originalDirection.equalsIgnoreCase("NORTH")){
+               if(carArray[i].originalDirection.getName().equalsIgnoreCase("NORTH")){
                     northStreet.carQueue.add(carThreadArray[i]);
                }
-               else if(carArray[i].originalDirection.equalsIgnoreCase("EAST")){
+               else if(carArray[i].originalDirection.getName().equalsIgnoreCase("EAST")){
                     eastStreet.carQueue.add(carThreadArray[i]);
                }
-               else if(carArray[i].originalDirection.equalsIgnoreCase("SOUTH")){
+               else if(carArray[i].originalDirection.getName().equalsIgnoreCase("SOUTH")){
                     southStreet.carQueue.add(carThreadArray[i]);
                }
-               else if(carArray[i].originalDirection.equalsIgnoreCase("WEST")){
+               else if(carArray[i].originalDirection.getName().equalsIgnoreCase("WEST")){
                     westStreet.carQueue.add(carThreadArray[i]);
                }
                carThreadArray[i].start();
           }
-          northStreet.carQueue.add(carThread0);
      }
 }
 

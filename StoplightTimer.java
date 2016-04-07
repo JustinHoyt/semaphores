@@ -1,9 +1,19 @@
+import java.text.NumberFormat;
+import java.util.Timer;
+import java.text.DecimalFormat;
+import java.util.TimerTask;
+
 public class StoplightTimer{
+    public Enum.Color northOrSouthColor;
+    public Enum.Color eastOrWestColor;
+    Timer stoplightTimer;
+    NumberFormat formatter;
+
     public StoplightTimer(){
-        Timer stoplightTimer = new Timer();
-        Enum.Color northOrSouthColor = Enum.Color.GREEN;
-        Enum.Color eastOrWestColor = Enum.Color.RED;
-        NumberFormat formatter = new DecimalFormat("#0.0");
+        stoplightTimer = new Timer();
+        northOrSouthColor = Enum.Color.GREEN;
+        eastOrWestColor = Enum.Color.RED_OR_YELLOW;
+        formatter = new DecimalFormat("#0.0");
         
         double startTime = System.currentTimeMillis();
     
@@ -12,46 +22,31 @@ public class StoplightTimer{
             public void run(){
                 //elapsed time
                 double currentTime   = (System.currentTimeMillis() - startTime) / 1000.0;
-                if(seconds < 8){
-                    //System.out.println("GREEN: " + seconds);
-                    northOrSouthColor = Enum.Color.GREEN;
-                    eastOrWestColor = Enum.Color.YELLOW;
-                }
                 if(seconds < 10){
                     //System.out.println("GREEN: " + seconds);
                     northOrSouthColor = Enum.Color.GREEN;
-                    eastOrWestColor = Enum.Color.RED;
-                }
-                else if(seconds < 12){
-                    //System.out.println("YELLOW: " + seconds);
-                    northOrSouthColor = Enum.Color.YELLOW;
-                    eastOrWestColor = Enum.Color.GREEN;
-                }
-                else if(seconds < 18){
-                    //System.out.println("RED: " + seconds);
-                    northOrSouthColor = Enum.Color.RED;
-                    eastOrWestColor = Enum.Color.YELLOW;
+                    eastOrWestColor = Enum.Color.RED_OR_YELLOW;
                 }
                 else if(seconds < 20){
                     //System.out.println("RED: " + seconds);
-                    northOrSouthColor = Enum.Color.RED;
-                    eastOrWestColor = Enum.Color.RED;
+                    northOrSouthColor = Enum.Color.GREEN;
+                    eastOrWestColor = Enum.Color.RED_OR_YELLOW;
                 }
                 
                 System.out.println(formatter.format(currentTime));
                 seconds = (seconds + 1) % 20;
             }
-        }, 0, 2000);
+        }, 0, 1000);
     }
     
     public Enum.Color getStoplightColor(Enum.Direction direction){
         if(direction == Enum.Direction.NORTH ||
            direction == Enum.Direction.SOUTH){
-            if(color == Enum.Color.GREEN){
-                
-            }
+            return northOrSouthColor;
         }
-        return color;
+        else{
+            return eastOrWestColor;
+        }
     }
     
     public double getCurrentTime(){

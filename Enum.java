@@ -1,6 +1,6 @@
 public class Enum{
     public enum Color {
-        RED, YELLOW, GREEN
+        RED_OR_YELLOW, GREEN
      }
     
      public enum Direction {

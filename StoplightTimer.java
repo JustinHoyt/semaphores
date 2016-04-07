@@ -6,8 +6,9 @@ import java.util.TimerTask;
 public class StoplightTimer{
     public Enum.Color northOrSouthColor;
     public Enum.Color eastOrWestColor;
-    Timer stoplightTimer;
-    NumberFormat formatter;
+    public Timer stoplightTimer;
+    public NumberFormat formatter;
+    public double startTime;
 
     public StoplightTimer(){
         stoplightTimer = new Timer();
@@ -15,7 +16,7 @@ public class StoplightTimer{
         eastOrWestColor = Enum.Color.RED_OR_YELLOW;
         formatter = new DecimalFormat("#0.0");
         
-        double startTime = System.currentTimeMillis();
+        startTime = System.currentTimeMillis();
     
         stoplightTimer.scheduleAtFixedRate(new TimerTask(){
             private int seconds;
@@ -33,7 +34,7 @@ public class StoplightTimer{
                     eastOrWestColor = Enum.Color.RED_OR_YELLOW;
                 }
                 
-                System.out.println(formatter.format(currentTime));
+                //System.out.println(formatter.format(currentTime));
                 seconds = (seconds + 1) % 20;
             }
         }, 0, 1000);

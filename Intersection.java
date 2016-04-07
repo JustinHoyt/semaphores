@@ -28,8 +28,8 @@ public class Intersection {
     public Intersection(){
         north = new Stoplight(Enum.Direction.NORTH, Enum.Color.GREEN);
         south = new Stoplight(Enum.Direction.SOUTH, Enum.Color.GREEN);
-        east = new Stoplight(Enum.Direction.EAST, Enum.Color.RED);
-        west = new Stoplight(Enum.Direction.WEST, Enum.Color.RED);
+        east = new Stoplight(Enum.Direction.EAST, Enum.Color.RED_OR_YELLOW);
+        west = new Stoplight(Enum.Direction.WEST, Enum.Color.RED_OR_YELLOW);
         
         northEastLock = new Semaphore(1, true);
         northWestLock = new Semaphore(1, true);

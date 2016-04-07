@@ -3,7 +3,7 @@ import java.util.Queue;
 
 public class Street{
     Stoplight stoplight;
-    Queue<Thread> carQueue;
+    Queue<Car> carQueue;
     
     Street(Enum.Direction direction){
         carQueue = new LinkedList<>();

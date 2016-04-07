@@ -11,6 +11,10 @@ class Driver{
      public static Runnable[] runCarArray;
      public static Thread[] carThreadArray;
      public static Street[] street;
+     public static final int NORTH = 0;
+     public static final int EAST = 1;
+     public static final int SOUTH = 2;
+     public static final int WEST = 3;
      
      public static void main(String[] args) {
           carArray = new Car[8];
@@ -18,10 +22,10 @@ class Driver{
           carThreadArray = new Thread[8];
           street = new Street[4];
 
-          northStreet = new Street(Enum.Direction.NORTH);
-          eastStreet = new Street(Enum.Direction.EAST);
-          southStreet = new Street(Enum.Direction.SOUTH);
-          westStreet = new Street(Enum.Direction.WEST);
+          street[NORTH] = new Street(Enum.Direction.NORTH);
+          street[EAST] = new Street(Enum.Direction.EAST);
+          street[SOUTH] = new Street(Enum.Direction.SOUTH);
+          street[WEST] = new Street(Enum.Direction.WEST);
 
           carArray[0] = new Car(0, 1.1, Enum.Direction.NORTH, Enum.Direction.NORTH);
           carArray[1]= new Car(1, 2.0, Enum.Direction.NORTH, Enum.Direction.NORTH);
@@ -37,31 +41,31 @@ class Driver{
                carThreadArray[i] = new Thread(runCarArray[i]);
                
                if(carArray[i].originalDirection.getName().equalsIgnoreCase("NORTH")){
-                    northStreet.carQueue.add(carThreadArray[i]);
+                    street[NORTH].carQueue.add(carThreadArray[i]);
                }
                else if(carArray[i].originalDirection.getName().equalsIgnoreCase("EAST")){
-                    eastStreet.carQueue.add(carThreadArray[i]);
+                    street[EAST].carQueue.add(carThreadArray[i]);
                }
                else if(carArray[i].originalDirection.getName().equalsIgnoreCase("SOUTH")){
-                    southStreet.carQueue.add(carThreadArray[i]);
+                    street[SOUTH].carQueue.add(carThreadArray[i]);
                }
                else if(carArray[i].originalDirection.getName().equalsIgnoreCase("WEST")){
-                    westStreet.carQueue.add(carThreadArray[i]);
+                    street[WEST].carQueue.add(carThreadArray[i]);
                }
           }
-          while(!street[Enum.Compass.NORTH].carQueue.isEmpty() ||    // while queues aren't empty
-                !street[Enum.Compass.EAST].carQueue.isEmpty()  ||
-                !street[Enum.Compass.SOUTH].carQueue.isEmpty() ||
-                !street[Enum.Compass.WEST].carQueue.isEmpty()){
-               if(northStreet.stoplight.equalsIgnoreCase("GREEN")){
-                    Thread northCarThread = street[Enum.Compass.NORTH].queue.remove();
-                    Thread southCarThread = street[Enum.Compass.SOUTH].queue.remove();
+          while(!street[NORTH].carQueue.isEmpty() ||    // while queues aren't empty
+                !street[EAST].carQueue.isEmpty()  ||
+                !street[SOUTH].carQueue.isEmpty() ||
+                !street[WEST].carQueue.isEmpty()){
+               if(street[NORTH].stoplight.color.equals(Enum.Color.GREEN)){
+                    Thread northCarThread = street[NORTH].carQueue.remove();
+                    Thread southCarThread = street[SOUTH].carQueue.remove();
                     northCarThread.start();
                     southCarThread.start();
                }
-               else if(eastStreet.stoplight.equalsIgnoreCase("GREEN")){
-                    Thread eastCarThread = street[Enum.Compass.EAST].queue.remove();
-                    Thread westCarThread = street[Enum.Compass.WEST].queue.remove();
+               else if(street[EAST].stoplight.color.equals(Enum.Color.GREEN)){
+                    Thread eastCarThread = street[EAST].carQueue.remove();
+                    Thread westCarThread = street[WEST].carQueue.remove();
                     eastCarThread.start();
                     westCarThread.start();
                }

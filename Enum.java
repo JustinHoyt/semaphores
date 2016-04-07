@@ -3,13 +3,6 @@ public class Enum{
         RED, YELLOW, GREEN
      }
     
-    public enum Compass{
-        NORTH(0),
-        EAST(1),
-        SOUTH(2),
-        WEST(3)
-    }
-    
      public enum Direction {
         NORTH("North","N", 0), 
         EAST("East", "E", 1), 

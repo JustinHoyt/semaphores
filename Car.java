@@ -27,22 +27,15 @@ public class Car {
         if(originalDirection.getNumber() == targetDirection.getNumber()){
             goStraight(intersection);
         }
-        
         //if right
-        if((originalDirection.getNumber() + 1) % 4 == targetDirection.getNumber()){
+        else if((originalDirection.getNumber() + 1) % 4 == targetDirection.getNumber()){
             goRight(intersection);
         }
-        
         //if left
         else if(originalDirection.getNumber() == (targetDirection.getNumber() + 1) % 4) {
             goLeft(intersection);
         }
         
-        try {
-            intersection.northEastLock.acquire();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         System.out.println(this.toString() + " arriving");
     }
     
@@ -55,7 +48,7 @@ public class Car {
         System.out.println(this.toString() + " crossing");
     }
     
-    public void exitIntersection(Intersection intersection){
+    public synchronized void exitIntersection(Intersection intersection){
         //if straight
         if(originalDirection.getNumber() == targetDirection.getNumber()){
             String acquireOrRelease = "release";
@@ -163,6 +156,7 @@ public class Car {
             System.out.println("error in acquireOrReleaseGoRightSemaphores");
         }
     }
+    
     public void aquireOrReleaseGoLeftSemaphores(String acquireOrRelease, Intersection intersection){
         int startOuterSemaphoreToGet = (2*this.originalDirection.getNumber() + 4) % 8;
         int middleInnerSemaphoreToGet = this.originalDirection.getNumber();

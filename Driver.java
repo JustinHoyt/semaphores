@@ -10,16 +10,13 @@ class Driver{
      public static Car[] carArray;
      public static Runnable[] runCarArray;
      public static Thread[] carThreadArray;
-     
-     public static Street northStreet;
-     public static Street eastStreet;
-     public static Street southStreet;
-     public static Street westStreet;
+     public static Street[] street;
      
      public static void main(String[] args) {
           carArray = new Car[8];
           runCarArray = new Runnable[8];
           carThreadArray = new Thread[8];
+          street = new Street[4];
 
           northStreet = new Street(Enum.Direction.NORTH);
           eastStreet = new Street(Enum.Direction.EAST);
@@ -51,7 +48,23 @@ class Driver{
                else if(carArray[i].originalDirection.getName().equalsIgnoreCase("WEST")){
                     westStreet.carQueue.add(carThreadArray[i]);
                }
-               carThreadArray[i].start();
+          }
+          while(!street[Enum.Compass.NORTH].carQueue.isEmpty() ||    // while queues aren't empty
+                !street[Enum.Compass.EAST].carQueue.isEmpty()  ||
+                !street[Enum.Compass.SOUTH].carQueue.isEmpty() ||
+                !street[Enum.Compass.WEST].carQueue.isEmpty()){
+               if(northStreet.stoplight.equalsIgnoreCase("GREEN")){
+                    Thread northCarThread = street[Enum.Compass.NORTH].queue.remove();
+                    Thread southCarThread = street[Enum.Compass.SOUTH].queue.remove();
+                    northCarThread.start();
+                    southCarThread.start();
+               }
+               else if(eastStreet.stoplight.equalsIgnoreCase("GREEN")){
+                    Thread eastCarThread = street[Enum.Compass.EAST].queue.remove();
+                    Thread westCarThread = street[Enum.Compass.WEST].queue.remove();
+                    eastCarThread.start();
+                    westCarThread.start();
+               }
           }
      }
 }

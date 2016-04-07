@@ -14,7 +14,7 @@ public class StoplightTimer{
         stoplightTimer = new Timer();
         northOrSouthColor = Enum.Color.GREEN;
         eastOrWestColor = Enum.Color.RED_OR_YELLOW;
-        formatter = new DecimalFormat("#0.0");
+
         
         startTime = System.currentTimeMillis();
     

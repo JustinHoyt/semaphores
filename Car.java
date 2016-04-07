@@ -1,25 +1,27 @@
 //package com.semaphore.Driver;
 
+import java.text.DecimalFormat;
+import java.util.Formatter;
 import java.util.concurrent.Semaphore;
 
 public class Car {
     public Enum.Direction originalDirection;
     public Enum.Direction targetDirection;
     public int carID;
-    public double arrivalTime;
+    public double timer;
     
     public Car(int carID, double arrivalTime, Enum.Direction originalDirection, Enum.Direction targetDirection){
         this.originalDirection = originalDirection;
         this.targetDirection = targetDirection;
         this.carID = carID;
-        this.arrivalTime = arrivalTime;
+        this.timer = arrivalTime;
     }
     
     public Car(Car car){
         this.originalDirection = car.originalDirection;
         this.targetDirection = car.targetDirection;
         this.carID = car.carID;
-        this.arrivalTime = car.arrivalTime;
+        this.timer = car.timer;
     }
     
     public void arriveIntersection(Intersection intersection){
@@ -87,7 +89,9 @@ public class Car {
     
     @Override
     public String toString(){
-        return "Time: " + arrivalTime + 
+        DecimalFormat formatter = new DecimalFormat("#0.0");
+
+        return "Time: " + formatter.format(timer) +
                ": Car " + carID + 
                " (->" + originalDirection.getName() +  
                " ->" + targetDirection.getName() + ")";

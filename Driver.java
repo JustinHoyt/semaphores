@@ -1,12 +1,3 @@
-import java.io.*;
-import java.io.FileNotFoundException;
-import java.net.URL;
-import java.util.ResourceBundle;
-import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.Timer;
-
 class Driver{
      public static Car[] carArray;
      public static Runnable[] runCarArray;
@@ -40,7 +31,7 @@ class Driver{
           carArray[7] = new Car(7, 5.9, Enum.Direction.WEST, Enum.Direction.NORTH);
 
           for(int i = 0; i < 8; i++) {
-              runCarArray[i] = new CrossIntersection(carArray[i]);
+              runCarArray[i] = new CrossIntersection(carArray[i], stoplightTimer);
 
 
               if (carArray[i].originalDirection.getName().equalsIgnoreCase("NORTH")) {
@@ -60,8 +51,8 @@ class Driver{
                   !street[WEST].carQueue.isEmpty()){
                for(int direction = 0; direction < 4; direction++){
                     if(!street[direction].carQueue.isEmpty() &&
-                            stoplightTimer.getCurrentTime()  >= street[direction].carQueue.peek().arrivalTime){
-                        Runnable runnableToStart = new CrossIntersection(street[direction].carQueue.remove());
+                            stoplightTimer.getCurrentTime()  >= street[direction].carQueue.peek().timer){
+                        Runnable runnableToStart = new CrossIntersection(street[direction].carQueue.remove(), stoplightTimer);
                         Thread threadToStart = new Thread(runnableToStart);
                         threadToStart.start();
                     }
@@ -72,22 +63,24 @@ class Driver{
 
 class CrossIntersection implements Runnable {
      private Car car;
+    private StoplightTimer stoplightTimer;
      Intersection intersection = new Intersection();
 
-     public CrossIntersection(Car car){
+     public CrossIntersection(Car car, StoplightTimer stoplightTimer){
           /*Passes in a car from runnable*/
           this.car = new Car(car);
-          System.out.println(this.car.carID);
+          this.stoplightTimer = stoplightTimer;
      }
 
      @Override
      public void run() {
           try{
                //this is where running the thread happens
-
+               car.timer = stoplightTimer.getCurrentTime();
                car.arriveIntersection(intersection);
                // if light is green then cross, otherwise wait
                car.crossIntersection();
+               car.timer = stoplightTimer.getCurrentTime();
                car.exitIntersection(intersection);
           } catch (Exception ignored) {
                System.out.println("RUN FAILED");

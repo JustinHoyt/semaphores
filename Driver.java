@@ -69,15 +69,15 @@ class CrossIntersection implements Runnable {
      @Override
      public void run() {
             try{
-                //this is where running the thread happens
                 car.timer = stoplightTimer.getCurrentTime();
+                //spin until the light is green
                 while(((car.originalDirection == Enum.Direction.NORTH || car.originalDirection == Enum.Direction.SOUTH) && stoplightTimer.northOrSouthColor == Enum.Color.RED_OR_YELLOW) ||
                     ((car.originalDirection == Enum.Direction.EAST || car.originalDirection == Enum.Direction.WEST)&& stoplightTimer.eastOrWestColor == Enum.Color.RED_OR_YELLOW)) {
                     Thread.sleep(50);
                 }
-
+                
                 car.arriveIntersection(intersection);
-                //write cases into cross
+                car.timer = stoplightTimer.getCurrentTime();
                 car.crossIntersection();
                 car.timer = stoplightTimer.getCurrentTime();
                 car.exitIntersection(intersection);

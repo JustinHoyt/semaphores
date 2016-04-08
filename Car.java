@@ -24,8 +24,9 @@ public class Car {
         this.timer = car.timer;
     }
     
-    public void arriveIntersection(Intersection intersection){
+    public synchronized void arriveIntersection(Intersection intersection){
         //if straight
+        System.out.println(this.toString() + " arriving");
         if(originalDirection.getNumber() == targetDirection.getNumber()){
             goStraight(intersection);
         }
@@ -38,7 +39,6 @@ public class Car {
             goLeft(intersection);
         }
         
-        System.out.println(this.toString() + " arriving");
     }
     
     public void crossIntersection(){
@@ -50,7 +50,7 @@ public class Car {
         }   
     }
     
-    public synchronized void exitIntersection(Intersection intersection){
+    public void exitIntersection(Intersection intersection){
         //if straight
         if(originalDirection.getNumber() == targetDirection.getNumber()){
             String acquireOrRelease = "release";
@@ -97,100 +97,163 @@ public class Car {
                " ->" + targetDirection.getName() + ")";
     }
     
-    public void aquireOrReleaseGoStraightSemaphores(String acquireOrRelease, Intersection intersection){
-        int startOuterSemaphoreToGet = (2*(this.originalDirection.getNumber()) + 4) % 8; // OUTER sem
+    public synchronized void aquireOrReleaseGoStraightSemaphores(String acquireOrRelease, Intersection intersection){
+        //int startOuterSemaphoreToGet = (2*(this.originalDirection.getNumber()) + 4) % 8; // OUTER sem
         int middleInnerSemaphoreToGet = (this.originalDirection.getNumber() + 2) % 4;    // INNER sem
         int endOuterSemaphoreToGet = (2*(this.originalDirection.getNumber()) + 1) % 8;   // OUTER sem
     
-        Semaphore startOuterSemaphore = intersection.outerSemaphore.get(startOuterSemaphoreToGet);  //OUTER
+        //Semaphore startOuterSemaphore = intersection.outerSemaphore.get(startOuterSemaphoreToGet);  //OUTER
         Semaphore middleInnerSemaphore = intersection.innerSemaphore.get(middleInnerSemaphoreToGet); // INNER
         Semaphore endOuterSemaphore = intersection.outerSemaphore.get(endOuterSemaphoreToGet);      // OUTER
     
         if(acquireOrRelease.equalsIgnoreCase("acquire")){
+            // try {
+            //     startOuterSemaphore.acquire();
+            // } catch (InterruptedException e) {
+            //     e.printStackTrace();
+            // }
             try {
-                startOuterSemaphore.acquire();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            try {
+                if(this.carID == 2 || this.carID == 3){
+                    System.out.println("CAR: " + carID + " ACQUIRED MIDDLE LOCK " + middleInnerSemaphore.availablePermits());
+                }
                 middleInnerSemaphore.acquire();
+                if(this.carID == 2 || this.carID == 3){
+                    System.out.println("CAR: " + carID + " ACQUIRED MIDDLE LOCK " + middleInnerSemaphore.availablePermits());
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             try {
+                if(this.carID == 2 || this.carID == 3){
+                    System.out.println("CAR: " + carID + " ACQUIRED OUTER LOCK " + endOuterSemaphore.availablePermits());
+                }
                 endOuterSemaphore.acquire();
+                if(this.carID == 2 || this.carID == 3){
+                    System.out.println("CAR: " + carID + " ACQUIRED OUTER LOCK " + endOuterSemaphore.availablePermits());
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
         else if(acquireOrRelease.equalsIgnoreCase("release")){
-            startOuterSemaphore.release();
+            //startOuterSemaphore.release();
+            if(this.carID == 2 || this.carID == 3){
+                System.out.println("CAR: " + carID + " RELEASED MIDDLE LOCK " + middleInnerSemaphore.availablePermits());
+            }
             middleInnerSemaphore.release();
+            if(this.carID == 2 || this.carID == 3){
+                System.out.println("CAR: " + carID + " RELEASED MIDDLE LOCK " + middleInnerSemaphore.availablePermits());
+            }
+            
+            if(this.carID == 2 || this.carID == 3){
+                System.out.println("CAR: " + carID + " RELEASED OUTER LOCK " + endOuterSemaphore.availablePermits());
+            }
             endOuterSemaphore.release();
+            if(this.carID == 2 || this.carID == 3){
+                System.out.println("CAR: " + carID + " RELEASED OUTER LOCK " + endOuterSemaphore.availablePermits());
+            }
+            
         }
         else{
             System.out.println("error in acquireOrReleaseGoStraightSemaphores");
         }
     }
     
-    public void aquireOrReleaseGoRightSemaphores(String acquireOrRelease, Intersection intersection){
-        int startOuterSemaphoreToGet = (2*this.originalDirection.getNumber() + 4) % 8;
+    public synchronized void aquireOrReleaseGoRightSemaphores(String acquireOrRelease, Intersection intersection){
+        // int startOuterSemaphoreToGet = (2*this.originalDirection.getNumber() + 4) % 8;
         int endOuterSemaphoreToGet = (2*this.originalDirection.getNumber() + 3) % 8;
         
-        Semaphore startOuterSemaphore = intersection.outerSemaphore.get(startOuterSemaphoreToGet);
+        // Semaphore startOuterSemaphore = intersection.outerSemaphore.get(startOuterSemaphoreToGet);
         Semaphore endOuterSemaphore = intersection.outerSemaphore.get(endOuterSemaphoreToGet);
         
         if(acquireOrRelease.equalsIgnoreCase("acquire")){
+            // try {
+            //     startOuterSemaphore.acquire();
+            // } catch (InterruptedException e) {
+            //     e.printStackTrace();
+            // }
             try {
-                startOuterSemaphore.acquire();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            try {
+                if(this.carID == 2 || this.carID == 3){
+                    System.out.println("CAR: " + carID + " ACQUIRED LOCK " + endOuterSemaphore.availablePermits());
+                }
                 endOuterSemaphore.acquire();
+                if(this.carID == 2 || this.carID == 3){
+                    System.out.println("CAR: " + carID + " ACQUIRED LOCK " + endOuterSemaphore.availablePermits());
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
         else if(acquireOrRelease.equalsIgnoreCase("release")){
-            startOuterSemaphore.release();
+            // startOuterSemaphore.release();
+            if(this.carID == 2 || this.carID == 3){
+                    System.out.println("CAR: " + carID + " RELEASED LOCK " + endOuterSemaphore.availablePermits());
+            }
             endOuterSemaphore.release();
+            if(this.carID == 2 || this.carID == 3){
+                    System.out.println("CAR: " + carID + " RELEASED LOCK " + endOuterSemaphore.availablePermits());
+            }
         }
         else{
             System.out.println("error in acquireOrReleaseGoRightSemaphores");
         }
     }
     
-    public void aquireOrReleaseGoLeftSemaphores(String acquireOrRelease, Intersection intersection){
-        int startOuterSemaphoreToGet = (2*this.originalDirection.getNumber() + 4) % 8;
+    public synchronized void aquireOrReleaseGoLeftSemaphores(String acquireOrRelease, Intersection intersection){
+        //int startOuterSemaphoreToGet = (2*this.originalDirection.getNumber() + 4) % 8;
         int middleInnerSemaphoreToGet = this.originalDirection.getNumber();
         int endOuterSemaphoreToGet = (2*this.originalDirection.getNumber() + 7) % 8;
         
-        Semaphore startOuterSemaphore = intersection.outerSemaphore.get(startOuterSemaphoreToGet);
+        //Semaphore startOuterSemaphore = intersection.outerSemaphore.get(startOuterSemaphoreToGet);
         Semaphore middleInnerSemaphore = intersection.innerSemaphore.get(middleInnerSemaphoreToGet);
         Semaphore endOuterSemaphore = intersection.outerSemaphore.get(endOuterSemaphoreToGet);
 
         if(acquireOrRelease.equalsIgnoreCase("acquire")){
+            // try {
+            //     startOuterSemaphore.acquire();
+            // } catch (InterruptedException e) {
+            //     e.printStackTrace();
+            // }
             try {
-                startOuterSemaphore.acquire();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            try {
+                if(this.carID == 2 || this.carID == 3){
+                    System.out.println("CAR: " + carID + " ACQUIRED MIDDLE LOCK " + middleInnerSemaphore.availablePermits());
+                }
                 middleInnerSemaphore.acquire();
+                if(this.carID == 2 || this.carID == 3){
+                    System.out.println("CAR: " + carID + " ACQUIRED MIDDLE LOCK " + middleInnerSemaphore.availablePermits());
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             try {
+                if(this.carID == 2 || this.carID == 3){
+                    System.out.println("CAR: " + carID + " ACQUIRED END LOCK " + endOuterSemaphore.availablePermits());
+                }
                 endOuterSemaphore.acquire();
+                if(this.carID == 2 || this.carID == 3){
+                    System.out.println("CAR: " + carID + " ACQUIRED END LOCK " + endOuterSemaphore.availablePermits());
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
         else if(acquireOrRelease.equalsIgnoreCase("release")){
-            startOuterSemaphore.release();
+            //startOuterSemaphore.release();
+            if(this.carID == 2 || this.carID == 3){
+                    System.out.println("CAR: " + carID + " RELEASED MIDDLE LOCK " + middleInnerSemaphore.availablePermits());
+            }
             middleInnerSemaphore.release();
+            if(this.carID == 2 || this.carID == 3){
+                    System.out.println("CAR: " + carID + " RELEASED MIDDLE LOCK " + middleInnerSemaphore.availablePermits());
+            }
+            
+            if(this.carID == 2 || this.carID == 3){
+                System.out.println("CAR: " + carID + " RELEASED END LOCK " + endOuterSemaphore.availablePermits());
+            }
             endOuterSemaphore.release();
+            if(this.carID == 2 || this.carID == 3){
+                System.out.println("CAR: " + carID + " RELEASED END LOCK " + endOuterSemaphore.availablePermits());
+            }
         }
         else{
             System.out.println("error in acquireOrReleaseGoStraightSemaphores");

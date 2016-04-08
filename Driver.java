@@ -31,18 +31,10 @@ class Driver{
           carArray[7] = new Car(7, 5.9, Enum.Direction.WEST, Enum.Direction.NORTH);
 
         for(int i = 0; i < 8; i++) {
-            if (carArray[i].originalDirection.getName().equalsIgnoreCase("NORTH")) {
-                street[NORTH].carQueue.add(carArray[i]);
-                runCarArray[i] = new CrossIntersection(street[NORTH], stoplightTimer);    
-            } else if (carArray[i].originalDirection.getName().equalsIgnoreCase("EAST")) {
-                street[EAST].carQueue.add(carArray[i]);
-                runCarArray[i] = new CrossIntersection(street[EAST], stoplightTimer);    
-            } else if (carArray[i].originalDirection.getName().equalsIgnoreCase("SOUTH")) {
-                street[SOUTH].carQueue.add(carArray[i]);
-                runCarArray[i] = new CrossIntersection(street[SOUTH], stoplightTimer);    
-            } else if (carArray[i].originalDirection.getName().equalsIgnoreCase("WEST")) {
-                street[WEST].carQueue.add(carArray[i]);
-                runCarArray[i] = new CrossIntersection(street[WEST], stoplightTimer);    
+            for(int direction = 0; direction < 4; direction++){
+                if (carArray[i].originalDirection.getNumber() == direction) {
+                    street[direction].carQueue.add(carArray[i]);
+                }
             }
         }
 
@@ -79,16 +71,17 @@ class CrossIntersection implements Runnable {
             try{
                 //this is where running the thread happens
                 car.timer = stoplightTimer.getCurrentTime();
-                if((car.originalDirection == Enum.Direction.NORTH || car.originalDirection == Enum.Direction.SOUTH) ||
-                    (car.originalDirection == Enum.Direction.EAST || car.originalDirection == Enum.Direction.WEST)){
-                    while(street.stoplight.color != Enum.Color.GREEN){
-                        //wait for green light...
-                    }
-                    car.arriveIntersection(intersection);
-                    car.crossIntersection();
-                    car.timer = stoplightTimer.getCurrentTime();
-                    car.exitIntersection(intersection);
+                while(((car.originalDirection == Enum.Direction.NORTH || car.originalDirection == Enum.Direction.SOUTH) && stoplightTimer.northOrSouthColor == Enum.Color.RED_OR_YELLOW) ||
+                    ((car.originalDirection == Enum.Direction.EAST || car.originalDirection == Enum.Direction.WEST)&& stoplightTimer.eastOrWestColor == Enum.Color.RED_OR_YELLOW)) {
+                    Thread.sleep(1000);
                 }
+
+                car.arriveIntersection(intersection);
+                //write cases into cross
+                car.crossIntersection();
+                car.timer = stoplightTimer.getCurrentTime();
+                car.exitIntersection(intersection);
+
             } catch (Exception ignored) {
                System.out.println("RUN FAILED");
         }

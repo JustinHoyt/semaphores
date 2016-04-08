@@ -1,43 +1,38 @@
 import java.text.NumberFormat;
 import java.util.Timer;
-import java.text.DecimalFormat;
 import java.util.TimerTask;
+import java.util.concurrent.Semaphore;
 
 public class StoplightTimer{
     public Enum.Color northOrSouthColor;
     public Enum.Color eastOrWestColor;
     public Timer stoplightTimer;
-    public NumberFormat formatter;
     public double startTime;
+    private boolean isNorthSouthGreen;
 
     public StoplightTimer(){
         stoplightTimer = new Timer();
         northOrSouthColor = Enum.Color.GREEN;
         eastOrWestColor = Enum.Color.RED_OR_YELLOW;
-
-        
         startTime = System.currentTimeMillis();
-    
+        isNorthSouthGreen = true;
+
         stoplightTimer.scheduleAtFixedRate(new TimerTask(){
-            private int seconds;
             public void run(){
-                //elapsed time
-                double currentTime   = (System.currentTimeMillis() - startTime) / 1000.0;
-                if(seconds < 10){
-                    //System.out.println("GREEN: " + seconds);
+                double currentTime = (System.currentTimeMillis() - startTime) / 1000.0;
+                if(isNorthSouthGreen == true){
+                    //System.out.println("NORTH SOUTH IS GREEN");
                     northOrSouthColor = Enum.Color.GREEN;
                     eastOrWestColor = Enum.Color.RED_OR_YELLOW;
                 }
-                else if(seconds < 20){
-                    //System.out.println("RED: " + seconds);
-                    northOrSouthColor = Enum.Color.GREEN;
-                    eastOrWestColor = Enum.Color.RED_OR_YELLOW;
+                else if(isNorthSouthGreen == false){
+                    //System.out.println("NORTH SOUTH IS RED");
+                    northOrSouthColor = Enum.Color.RED_OR_YELLOW;
+                    eastOrWestColor = Enum.Color.GREEN;
                 }
-                
-                //System.out.println(formatter.format(currentTime));
-                seconds = (seconds + 1) % 20;
+                isNorthSouthGreen = !isNorthSouthGreen;
             }
-        }, 0, 1000);
+        }, 0, 10000);
     }
     
     public Enum.Color getStoplightColor(Enum.Direction direction){

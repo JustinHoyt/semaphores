@@ -30,20 +30,21 @@ class Driver{
           carArray[6] = new Car(6, 5.7, Enum.Direction.EAST, Enum.Direction.NORTH);
           carArray[7] = new Car(7, 5.9, Enum.Direction.WEST, Enum.Direction.NORTH);
 
-          for(int i = 0; i < 8; i++) {
-              runCarArray[i] = new CrossIntersection(carArray[i], stoplightTimer);
-
-
-              if (carArray[i].originalDirection.getName().equalsIgnoreCase("NORTH")) {
-                  street[NORTH].carQueue.add(carArray[i]);
-              } else if (carArray[i].originalDirection.getName().equalsIgnoreCase("EAST")) {
-                  street[EAST].carQueue.add(carArray[i]);
-              } else if (carArray[i].originalDirection.getName().equalsIgnoreCase("SOUTH")) {
-                  street[SOUTH].carQueue.add(carArray[i]);
-              } else if (carArray[i].originalDirection.getName().equalsIgnoreCase("WEST")) {
-                  street[WEST].carQueue.add(carArray[i]);
-              }
-          }
+        for(int i = 0; i < 8; i++) {
+            if (carArray[i].originalDirection.getName().equalsIgnoreCase("NORTH")) {
+                street[NORTH].carQueue.add(carArray[i]);
+                runCarArray[i] = new CrossIntersection(street[NORTH], stoplightTimer);    
+            } else if (carArray[i].originalDirection.getName().equalsIgnoreCase("EAST")) {
+                street[EAST].carQueue.add(carArray[i]);
+                runCarArray[i] = new CrossIntersection(street[EAST], stoplightTimer);    
+            } else if (carArray[i].originalDirection.getName().equalsIgnoreCase("SOUTH")) {
+                street[SOUTH].carQueue.add(carArray[i]);
+                runCarArray[i] = new CrossIntersection(street[SOUTH], stoplightTimer);    
+            } else if (carArray[i].originalDirection.getName().equalsIgnoreCase("WEST")) {
+                street[WEST].carQueue.add(carArray[i]);
+                runCarArray[i] = new CrossIntersection(street[WEST], stoplightTimer);    
+            }
+        }
 
           while(!street[NORTH].carQueue.isEmpty() ||    // while queues aren't empty
                   !street[EAST].carQueue.isEmpty()  ||
@@ -52,7 +53,7 @@ class Driver{
                for(int direction = 0; direction < 4; direction++){
                     if(!street[direction].carQueue.isEmpty() &&
                             stoplightTimer.getCurrentTime()  >= street[direction].carQueue.peek().timer){
-                        Runnable runnableToStart = new CrossIntersection(street[direction].carQueue.remove(), stoplightTimer);
+                        Runnable runnableToStart = new CrossIntersection(street[direction], stoplightTimer);
                         Thread threadToStart = new Thread(runnableToStart);
                         threadToStart.start();
                     }
@@ -62,28 +63,34 @@ class Driver{
 }
 
 class CrossIntersection implements Runnable {
-     private Car car;
+    private Car car;
     private StoplightTimer stoplightTimer;
+    private Street street;
      Intersection intersection = new Intersection();
 
-     public CrossIntersection(Car car, StoplightTimer stoplightTimer){
-          /*Passes in a car from runnable*/
-          this.car = new Car(car);
+     public CrossIntersection(Street street, StoplightTimer stoplightTimer){
+          this.street = street;
+          this.car = street.carQueue.poll();
           this.stoplightTimer = stoplightTimer;
      }
 
      @Override
      public void run() {
-          try{
-               //this is where running the thread happens
-               car.timer = stoplightTimer.getCurrentTime();
-               car.arriveIntersection(intersection);
-               // if light is green then cross, otherwise wait
-               car.crossIntersection();
-               car.timer = stoplightTimer.getCurrentTime();
-               car.exitIntersection(intersection);
-          } catch (Exception ignored) {
+            try{
+                //this is where running the thread happens
+                car.timer = stoplightTimer.getCurrentTime();
+                if((car.originalDirection == Enum.Direction.NORTH || car.originalDirection == Enum.Direction.SOUTH) ||
+                    (car.originalDirection == Enum.Direction.EAST || car.originalDirection == Enum.Direction.WEST)){
+                    while(street.stoplight.color != Enum.Color.GREEN){
+                        //wait for green light...
+                    }
+                    car.arriveIntersection(intersection);
+                    car.crossIntersection();
+                    car.timer = stoplightTimer.getCurrentTime();
+                    car.exitIntersection(intersection);
+                }
+            } catch (Exception ignored) {
                System.out.println("RUN FAILED");
-          }
-     }
+        }
+    }
 }

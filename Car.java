@@ -184,8 +184,8 @@ public class Car {
         int endOuterSemaphoreToGet = (2*this.originalDirection.getNumber() + 7) % 8;
         
         //Semaphore startOuterSemaphore = intersection.outerSemaphore.get(startOuterSemaphoreToGet);
-        Semaphore middleInnerSemaphore = intersection.innerSemaphore.get(middleInnerSemaphoreToGet);
-        Semaphore endOuterSemaphore = intersection.outerSemaphore.get(endOuterSemaphoreToGet);
+        DirectionalSemaphore middleInnerSemaphore = intersection.innerSemaphore.get(middleInnerSemaphoreToGet);
+        DirectionalSemaphore endOuterSemaphore = intersection.outerSemaphore.get(endOuterSemaphoreToGet);
 
         if(acquireOrRelease.equalsIgnoreCase("acquire")){
             // try {

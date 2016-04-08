@@ -42,12 +42,12 @@ public class Car {
     }
     
     public void crossIntersection(){
+        System.out.println(this.toString() + " crossing");
         try {
-            Thread.sleep(1000);                 //1000 milliseconds is one second.
+            Thread.sleep(2000);                 //2000 milliseconds is one second.
         } catch(InterruptedException ex) {
             Thread.currentThread().interrupt();
         }   
-        System.out.println(this.toString() + " crossing");
     }
     
     public synchronized void exitIntersection(Intersection intersection){

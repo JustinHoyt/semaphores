@@ -6,7 +6,7 @@ public class Street{
     Queue<Car> carQueue;
     
     Street(Enum.Direction direction){
-        carQueue = new LinkedList<>();
+        carQueue = new LinkedList<Car>();
         stoplight = new Stoplight(direction, Enum.Color.GREEN);
     }
 }

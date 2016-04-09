@@ -112,17 +112,17 @@ public class Car {
             //     e.printStackTrace();
             // }
             try {
-                if(originalDirection.getNumber() != middleInnerSemaphore.direction){
+                if(originalDirection.getNumber() != middleInnerSemaphore.originalDirection){
                     middleInnerSemaphore.semaphore.acquire();
-                    middleInnerSemaphore.direction = originalDirection.getNumber();
+                    middleInnerSemaphore.originalDirection = originalDirection.getNumber();
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             try {
-                if(originalDirection.getNumber() != endOuterSemaphore.direction){
+                if(originalDirection.getNumber() != endOuterSemaphore.originalDirection){
                     endOuterSemaphore.semaphore.acquire();
-                    endOuterSemaphore.direction = originalDirection.getNumber();
+                    endOuterSemaphore.originalDirection= originalDirection.getNumber();
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -132,11 +132,11 @@ public class Car {
             //startOuterSemaphore.release();
             if(middleInnerSemaphoreToGet != originalDirection.getNumber()){
                 middleInnerSemaphore.semaphore.release();
-                middleInnerSemaphore.direction = -1;
+                middleInnerSemaphore.originalDirection = -1;
             }
             if(endOuterSemaphoreToGet != originalDirection.getNumber()){
                 endOuterSemaphore.semaphore.release();
-                endOuterSemaphore.direction = -1;
+                endOuterSemaphore.originalDirection= -1;
             }
         }
         else{
@@ -160,7 +160,7 @@ public class Car {
             try {
                 if(endOuterSemaphoreToGet != originalDirection.getNumber()){
                     endOuterSemaphore.semaphore.acquire();
-                    endOuterSemaphore.direction = originalDirection.getNumber();
+                    endOuterSemaphore.originalDirection = originalDirection.getNumber();
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -170,7 +170,7 @@ public class Car {
             // startOuterSemaphore.release();
             if(endOuterSemaphoreToGet != originalDirection.getNumber()){
                 endOuterSemaphore.semaphore.release();
-                endOuterSemaphore.direction = -1;
+                endOuterSemaphore.originalDirection = -1;
             }
         }
         else{

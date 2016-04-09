@@ -193,32 +193,31 @@ public class Car {
             // } catch (InterruptedException e) {
             //     e.printStackTrace();
             // }
-            try {
-                if(middleInnerSemaphoreToGet != originalDirection.getNumber()){
-                    middleInnerSemaphore.semaphore.acquire();
-                    middleInnerSemaphore.direction = originalDirection.getNumber();
+            if((middleInnerSemaphore.originalDirection == this.originalDirection.getNumber() &&
+                    middleInnerSemaphore.targetDirection == this.targetDirection.getNumber()) == false){
+                try {
+                       middleInnerSemaphore.semaphore.acquire();
+                       middleInnerSemaphore.originalDirection = originalDirection.getNumber();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            try {
-                if(endOuterSemaphoreToGet != originalDirection.getNumber()){
+                try {
                     endOuterSemaphore.semaphore.acquire();
-                    endOuterSemaphore.direction = originalDirection.getNumber();
+                    endOuterSemaphore.originalDirection = originalDirection.getNumber();
+                    endOuterSemaphore.targetDirection = targetDirection.getNumber();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
         }
         else if(acquireOrRelease.equalsIgnoreCase("release")){
             //startOuterSemaphore.release();
-            if(middleInnerSemaphoreToGet != originalDirection.getNumber()){
+            if((middleInnerSemaphore.originalDirection == this.originalDirection.getNumber() &&
+                    middleInnerSemaphore.targetDirection == this.targetDirection.getNumber()) == false){
                 middleInnerSemaphore.semaphore.release();
-                middleInnerSemaphore.direction = -1;
-            }
-            if(endOuterSemaphoreToGet != originalDirection.getNumber()){
+                middleInnerSemaphore.originalDirection = -1;
                 endOuterSemaphore.semaphore.release();
-                endOuterSemaphore.direction = -1;
+                endOuterSemaphore.targetDirection = -1;
             }
         }
         else{

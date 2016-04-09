@@ -9,12 +9,14 @@ public class Car {
     public Enum.Direction targetDirection;
     public int carID;
     public double timer;
+    public boolean isPiggyback;
     
     public Car(int carID, double arrivalTime, Enum.Direction originalDirection, Enum.Direction targetDirection){
         this.originalDirection = originalDirection;
         this.targetDirection = targetDirection;
         this.carID = carID;
         this.timer = arrivalTime;
+        this.isPiggyback = false;
     }
     
     public Car(Car car){
@@ -22,6 +24,7 @@ public class Car {
         this.targetDirection = car.targetDirection;
         this.carID = car.carID;
         this.timer = car.timer;
+        this.isPiggyback = false;
     }
     
     public synchronized void arriveIntersection(Intersection intersection){
@@ -122,10 +125,13 @@ public class Car {
             // }
             if((middleInnerSemaphore.originalDirection == this.originalDirection.getNumber() &&
                     middleInnerSemaphore.targetDirection == this.targetDirection.getNumber()) == false){
+                isPiggyback = false;
                 try {
                     middleInnerSemaphore.semaphore.acquire();
                     middleInnerSemaphore.originalDirection = originalDirection.getNumber();
                     middleInnerSemaphore.targetDirection = targetDirection.getNumber();
+                    // System.out.println("CarID = " + this.carID + " acquired a permit from address: " + 
+                    // middleInnerSemaphore.semaphore.toString());
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -133,20 +139,26 @@ public class Car {
                     endOuterSemaphore.semaphore.acquire();
                     endOuterSemaphore.originalDirection = originalDirection.getNumber();
                     endOuterSemaphore.targetDirection = targetDirection.getNumber();
+                    // System.out.println("CarID = " + this.carID + " acquired a permit from address: " + 
+                    // endOuterSemaphore.semaphore.toString());
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
+            else{
+                isPiggyback = true;
+            }
         }
         else if(acquireOrRelease.equalsIgnoreCase("release")){
             //startOuterSemaphore.release();
-            middleInnerSemaphore.semaphore.release();
-            middleInnerSemaphore.originalDirection = -1;
-            middleInnerSemaphore.targetDirection = -1;
-            endOuterSemaphore.semaphore.release();
-            endOuterSemaphore.originalDirection = -1;
-            endOuterSemaphore.targetDirection = -1;
-            
+            if(isPiggyback == false){
+                middleInnerSemaphore.semaphore.release();
+                middleInnerSemaphore.originalDirection = -1;
+                middleInnerSemaphore.targetDirection = -1;
+                endOuterSemaphore.semaphore.release();
+                endOuterSemaphore.originalDirection = -1;
+                endOuterSemaphore.targetDirection = -1;
+            } 
         }
         else{
             System.out.println("error in acquireOrReleaseGoStraightSemaphores");
@@ -168,18 +180,28 @@ public class Car {
             // }
             if((endOuterSemaphore.originalDirection == this.originalDirection.getNumber() &&
                     endOuterSemaphore.targetDirection == this.targetDirection.getNumber()) == false){
+                isPiggyback = false;
                 try {
                     endOuterSemaphore.semaphore.acquire();
                     endOuterSemaphore.originalDirection = originalDirection.getNumber();
+                    // System.out.println("CarID = " + this.carID + " acquired a permit from address: " + 
+                    // endOuterSemaphore.semaphore.toString());
                 }catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
+            else{
+                isPiggyback = true;
+            }
         }
         else if(acquireOrRelease.equalsIgnoreCase("release")){
             // startOuterSemaphore.release();
-            endOuterSemaphore.semaphore.release();
-            endOuterSemaphore.originalDirection = -1;
+            if(isPiggyback == false){
+                endOuterSemaphore.semaphore.release();
+                endOuterSemaphore.originalDirection = -1;
+                // System.out.println("CarID = " + this.carID + " released a permit from address: " + 
+                //         endOuterSemaphore.semaphore.toString());
+            }
         }
         else{
             System.out.println("error in acquireOrReleaseGoRightSemaphores");
@@ -203,6 +225,7 @@ public class Car {
             // }
             if((middleInnerSemaphore.originalDirection == this.originalDirection.getNumber() &&
                     middleInnerSemaphore.targetDirection == this.targetDirection.getNumber()) == false){
+                isPiggyback = false;
                 try {
                        middleInnerSemaphore.semaphore.acquire();
                        middleInnerSemaphore.originalDirection = originalDirection.getNumber();
@@ -217,13 +240,18 @@ public class Car {
                     e.printStackTrace();
                 }
             }
+            else{
+                isPiggyback = true;
+            }
         }
         else if(acquireOrRelease.equalsIgnoreCase("release")){
             //startOuterSemaphore.release();
-            middleInnerSemaphore.semaphore.release();
-            middleInnerSemaphore.originalDirection = -1;
-            endOuterSemaphore.semaphore.release();
-            endOuterSemaphore.targetDirection = -1;
+            if(isPiggyback == false){
+                middleInnerSemaphore.semaphore.release();
+                middleInnerSemaphore.originalDirection = -1;
+                endOuterSemaphore.semaphore.release();
+                endOuterSemaphore.targetDirection = -1;
+            }
         }
         else{
             System.out.println("error in acquireOrReleaseGoStraightSemaphores");

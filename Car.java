@@ -1,5 +1,3 @@
-//package com.semaphore.Driver;
-
 import java.text.DecimalFormat;
 import java.util.Formatter;
 import java.util.concurrent.Semaphore;
@@ -29,7 +27,6 @@ public class Car {
     
     public synchronized void arriveIntersection(Intersection intersection){
         //if straight
-        System.out.println(this.toString() + " arriving");
         int entranceSemaphoreToGet = (2*(this.originalDirection.getNumber()) + 4) % 8;
         DirectionalSemaphore entranceSemaphore = intersection.outerSemaphore.get(entranceSemaphoreToGet);
         try{
@@ -53,7 +50,6 @@ public class Car {
     }
     
     public void crossIntersection(){
-        System.out.println(this.toString() + " crossing");
         try {
             Thread.sleep(2000);                 //2000 milliseconds is one second.
         } catch(InterruptedException ex) {
@@ -62,8 +58,6 @@ public class Car {
     }
     
     public void exitIntersection(Intersection intersection){
-        System.out.println(this.toString() + " exiting");
-        
         //if straight
         if(originalDirection.getNumber() == targetDirection.getNumber()){
             String acquireOrRelease = "release";
@@ -109,20 +103,13 @@ public class Car {
     }
     
     public synchronized void aquireOrReleaseGoStraightSemaphores(String acquireOrRelease, Intersection intersection){
-        //int startOuterSemaphoreToGet = (2*(this.originalDirection.getNumber()) + 4) % 8; // OUTER sem
         int middleInnerSemaphoreToGet = (this.originalDirection.getNumber() + 2) % 4;    // INNER sem
         int endOuterSemaphoreToGet = (2*(this.originalDirection.getNumber()) + 1) % 8;   // OUTER sem
     
-        //Semaphore startOuterSemaphore = intersection.outerSemaphore.get(startOuterSemaphoreToGet);  //OUTER
         DirectionalSemaphore middleInnerSemaphore = intersection.innerSemaphore.get(middleInnerSemaphoreToGet); // INNER
         DirectionalSemaphore endOuterSemaphore = intersection.outerSemaphore.get(endOuterSemaphoreToGet);      // OUTER
     
         if(acquireOrRelease.equalsIgnoreCase("acquire")){
-            // try {
-            //     startOuterSemaphore.acquire();
-            // } catch (InterruptedException e) {
-            //     e.printStackTrace();
-            // }
             if((middleInnerSemaphore.originalDirection == this.originalDirection.getNumber() &&
                     middleInnerSemaphore.targetDirection == this.targetDirection.getNumber()) == false){
                 isPiggyback = false;
@@ -130,8 +117,6 @@ public class Car {
                     middleInnerSemaphore.semaphore.acquire();
                     middleInnerSemaphore.originalDirection = originalDirection.getNumber();
                     middleInnerSemaphore.targetDirection = targetDirection.getNumber();
-                    // System.out.println("CarID = " + this.carID + " acquired a permit from address: " + 
-                    // middleInnerSemaphore.semaphore.toString());
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -139,8 +124,6 @@ public class Car {
                     endOuterSemaphore.semaphore.acquire();
                     endOuterSemaphore.originalDirection = originalDirection.getNumber();
                     endOuterSemaphore.targetDirection = targetDirection.getNumber();
-                    // System.out.println("CarID = " + this.carID + " acquired a permit from address: " + 
-                    // endOuterSemaphore.semaphore.toString());
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -150,7 +133,6 @@ public class Car {
             }
         }
         else if(acquireOrRelease.equalsIgnoreCase("release")){
-            //startOuterSemaphore.release();
             if(isPiggyback == false){
                 middleInnerSemaphore.semaphore.release();
                 middleInnerSemaphore.originalDirection = -1;
@@ -166,26 +148,16 @@ public class Car {
     }
     
     public synchronized void aquireOrReleaseGoRightSemaphores(String acquireOrRelease, Intersection intersection){
-        // int startOuterSemaphoreToGet = (2*this.originalDirection.getNumber() + 4) % 8;
         int endOuterSemaphoreToGet = (2*this.originalDirection.getNumber() + 3) % 8;
-        
-        // Semaphore startOuterSemaphore = intersection.outerSemaphore.get(startOuterSemaphoreToGet);
         DirectionalSemaphore endOuterSemaphore = intersection.outerSemaphore.get(endOuterSemaphoreToGet);
         
         if(acquireOrRelease.equalsIgnoreCase("acquire")){
-            // try {
-            //     startOuterSemaphore.acquire();
-            // } catch (InterruptedException e) {
-            //     e.printStackTrace();
-            // }
             if((endOuterSemaphore.originalDirection == this.originalDirection.getNumber() &&
                     endOuterSemaphore.targetDirection == this.targetDirection.getNumber()) == false){
                 isPiggyback = false;
                 try {
                     endOuterSemaphore.semaphore.acquire();
                     endOuterSemaphore.originalDirection = originalDirection.getNumber();
-                    // System.out.println("CarID = " + this.carID + " acquired a permit from address: " + 
-                    // endOuterSemaphore.semaphore.toString());
                 }catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -195,12 +167,9 @@ public class Car {
             }
         }
         else if(acquireOrRelease.equalsIgnoreCase("release")){
-            // startOuterSemaphore.release();
             if(isPiggyback == false){
                 endOuterSemaphore.semaphore.release();
                 endOuterSemaphore.originalDirection = -1;
-                // System.out.println("CarID = " + this.carID + " released a permit from address: " + 
-                //         endOuterSemaphore.semaphore.toString());
             }
         }
         else{
@@ -209,20 +178,13 @@ public class Car {
     }
     
     public synchronized void aquireOrReleaseGoLeftSemaphores(String acquireOrRelease, Intersection intersection){
-        //int startOuterSemaphoreToGet = (2*this.originalDirection.getNumber() + 4) % 8;
         int middleInnerSemaphoreToGet = this.originalDirection.getNumber();
         int endOuterSemaphoreToGet = (2*this.originalDirection.getNumber() + 7) % 8;
         
-        //Semaphore startOuterSemaphore = intersection.outerSemaphore.get(startOuterSemaphoreToGet);
         DirectionalSemaphore middleInnerSemaphore = intersection.innerSemaphore.get(middleInnerSemaphoreToGet);
         DirectionalSemaphore endOuterSemaphore = intersection.outerSemaphore.get(endOuterSemaphoreToGet);
 
         if(acquireOrRelease.equalsIgnoreCase("acquire")){
-            // try {
-            //     startOuterSemaphore.acquire();
-            // } catch (InterruptedException e) {
-            //     e.printStackTrace();
-            // }
             if((middleInnerSemaphore.originalDirection == this.originalDirection.getNumber() &&
                     middleInnerSemaphore.targetDirection == this.targetDirection.getNumber()) == false){
                 isPiggyback = false;
@@ -245,7 +207,6 @@ public class Car {
             }
         }
         else if(acquireOrRelease.equalsIgnoreCase("release")){
-            //startOuterSemaphore.release();
             if(isPiggyback == false){
                 middleInnerSemaphore.semaphore.release();
                 middleInnerSemaphore.originalDirection = -1;

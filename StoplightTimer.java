@@ -21,12 +21,10 @@ public class StoplightTimer{
             public void run(){
                 double currentTime = (System.currentTimeMillis() - startTime) / 1000.0;
                 if(isNorthSouthGreen == true){
-                    //System.out.println("NORTH SOUTH IS GREEN");
                     northOrSouthColor = Enum.Color.GREEN;
                     eastOrWestColor = Enum.Color.RED_OR_YELLOW;
                 }
                 else if(isNorthSouthGreen == false){
-                    //System.out.println("NORTH SOUTH IS RED");
                     northOrSouthColor = Enum.Color.RED_OR_YELLOW;
                     eastOrWestColor = Enum.Color.GREEN;
                 }

@@ -52,6 +52,8 @@ class Driver{
                 }
             }
         }
+        stoplightTimer.cancel();
+        stoplightTimer.purge();
     }
 }
 
@@ -72,6 +74,7 @@ class CrossIntersection implements Runnable {
      public void run() {
             try{
                 car.timer = stoplightTimer.getCurrentTime();
+                System.out.println(car.toString() + " arriving");
                 //spin until the light is green
                 while(((car.originalDirection == Enum.Direction.NORTH || car.originalDirection == Enum.Direction.SOUTH) && stoplightTimer.northOrSouthColor == Enum.Color.RED_OR_YELLOW) ||
                     ((car.originalDirection == Enum.Direction.EAST || car.originalDirection == Enum.Direction.WEST)&& stoplightTimer.eastOrWestColor == Enum.Color.RED_OR_YELLOW)){
@@ -85,8 +88,10 @@ class CrossIntersection implements Runnable {
                 }
                 car.arriveIntersection(intersection);
                 car.timer = stoplightTimer.getCurrentTime();
+                System.out.println(car.toString() + " crossing");
                 car.crossIntersection();
                 car.timer = stoplightTimer.getCurrentTime();
+                System.out.println(car.toString() + " exiting");
                 car.exitIntersection(intersection);
 
             } catch (Exception ignored) {

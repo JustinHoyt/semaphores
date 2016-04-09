@@ -32,7 +32,7 @@ public class StoplightTimer{
                 }
                 isNorthSouthGreen = !isNorthSouthGreen;
             }
-        }, 0, 10000);
+        }, 0, 20000);
     }
     
     public Enum.Color getStoplightColor(Enum.Direction direction){

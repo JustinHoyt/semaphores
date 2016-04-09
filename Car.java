@@ -111,33 +111,33 @@ public class Car {
             // } catch (InterruptedException e) {
             //     e.printStackTrace();
             // }
-            try {
-                if(originalDirection.getNumber() != middleInnerSemaphore.originalDirection){
+            if((middleInnerSemaphore.originalDirection == this.originalDirection.getNumber() &&
+                    middleInnerSemaphore.targetDirection == this.targetDirection.getNumber()) == false){
+                try {
                     middleInnerSemaphore.semaphore.acquire();
                     middleInnerSemaphore.originalDirection = originalDirection.getNumber();
+                    middleInnerSemaphore.targetDirection = targetDirection.getNumber();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            try {
-                if(originalDirection.getNumber() != endOuterSemaphore.originalDirection){
+                try {
                     endOuterSemaphore.semaphore.acquire();
-                    endOuterSemaphore.originalDirection= originalDirection.getNumber();
+                    endOuterSemaphore.originalDirection = originalDirection.getNumber();
+                    endOuterSemaphore.targetDirection = targetDirection.getNumber();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
         }
         else if(acquireOrRelease.equalsIgnoreCase("release")){
             //startOuterSemaphore.release();
-            if(middleInnerSemaphoreToGet != originalDirection.getNumber()){
-                middleInnerSemaphore.semaphore.release();
-                middleInnerSemaphore.originalDirection = -1;
-            }
-            if(endOuterSemaphoreToGet != originalDirection.getNumber()){
-                endOuterSemaphore.semaphore.release();
-                endOuterSemaphore.originalDirection= -1;
-            }
+            middleInnerSemaphore.semaphore.release();
+            middleInnerSemaphore.originalDirection = -1;
+            middleInnerSemaphore.targetDirection = -1;
+            endOuterSemaphore.semaphore.release();
+            endOuterSemaphore.originalDirection = -1;
+            endOuterSemaphore.targetDirection = -1;
+            
         }
         else{
             System.out.println("error in acquireOrReleaseGoStraightSemaphores");
@@ -157,21 +157,20 @@ public class Car {
             // } catch (InterruptedException e) {
             //     e.printStackTrace();
             // }
-            try {
-                if(endOuterSemaphoreToGet != originalDirection.getNumber()){
+            if((endOuterSemaphore.originalDirection == this.originalDirection.getNumber() &&
+                    endOuterSemaphore.targetDirection == this.targetDirection.getNumber()) == false){
+                try {
                     endOuterSemaphore.semaphore.acquire();
                     endOuterSemaphore.originalDirection = originalDirection.getNumber();
+                }catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
         }
         else if(acquireOrRelease.equalsIgnoreCase("release")){
             // startOuterSemaphore.release();
-            if(endOuterSemaphoreToGet != originalDirection.getNumber()){
-                endOuterSemaphore.semaphore.release();
-                endOuterSemaphore.originalDirection = -1;
-            }
+            endOuterSemaphore.semaphore.release();
+            endOuterSemaphore.originalDirection = -1;
         }
         else{
             System.out.println("error in acquireOrReleaseGoRightSemaphores");
@@ -212,13 +211,10 @@ public class Car {
         }
         else if(acquireOrRelease.equalsIgnoreCase("release")){
             //startOuterSemaphore.release();
-            if((middleInnerSemaphore.originalDirection == this.originalDirection.getNumber() &&
-                    middleInnerSemaphore.targetDirection == this.targetDirection.getNumber()) == false){
-                middleInnerSemaphore.semaphore.release();
-                middleInnerSemaphore.originalDirection = -1;
-                endOuterSemaphore.semaphore.release();
-                endOuterSemaphore.targetDirection = -1;
-            }
+            middleInnerSemaphore.semaphore.release();
+            middleInnerSemaphore.originalDirection = -1;
+            endOuterSemaphore.semaphore.release();
+            endOuterSemaphore.targetDirection = -1;
         }
         else{
             System.out.println("error in acquireOrReleaseGoStraightSemaphores");

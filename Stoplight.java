@@ -1,4 +1,3 @@
-
 public class Stoplight {
     public Enum.Direction direction;
     public Enum.Color color;

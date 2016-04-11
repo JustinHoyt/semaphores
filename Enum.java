@@ -3,7 +3,14 @@ public class Enum{
         RED_OR_YELLOW, GREEN
      }
     
-     public enum Direction {
+    public enum noCarsComing {
+        NORTH,
+        SOUTH,
+        EAST,
+        WEST
+    }
+    
+    public enum Direction {
         NORTH("North","N", 0), 
         EAST("East", "E", 1), 
         SOUTH("South", "S", 2), 
@@ -38,5 +45,5 @@ public class Enum{
         public String getValue(){
              return value;
         }
-     }
+    }
 }

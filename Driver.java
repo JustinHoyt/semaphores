@@ -52,8 +52,8 @@ class Driver{
                 }
             }
         }
-        stoplightTimer.cancel();
-        stoplightTimer.purge();
+        //stoplightTimer.cancel();
+        //stoplightTimer.purge();
     }
 }
 

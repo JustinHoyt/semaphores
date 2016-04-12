@@ -17,20 +17,20 @@ public class StoplightTimer{
         startTime = System.currentTimeMillis();
         isNorthSouthGreen = true;
 
-        stoplightTimer.scheduleAtFixedRate(new TimerTask(){
-            public void run(){
-                double currentTime = (System.currentTimeMillis() - startTime) / 1000.0;
-                if(isNorthSouthGreen == true){
-                    northOrSouthColor = Enum.Color.GREEN;
-                    eastOrWestColor = Enum.Color.RED_OR_YELLOW;
-                }
-                else if(isNorthSouthGreen == false){
-                    northOrSouthColor = Enum.Color.RED_OR_YELLOW;
-                    eastOrWestColor = Enum.Color.GREEN;
-                }
-                isNorthSouthGreen = !isNorthSouthGreen;
-            }
-        }, 0, 20000);
+        // stoplightTimer.scheduleAtFixedRate(new TimerTask(){
+        //     public void run(){
+        //         double currentTime = (System.currentTimeMillis() - startTime) / 1000.0;
+        //         if(isNorthSouthGreen == true){
+        //             northOrSouthColor = Enum.Color.GREEN;
+        //             eastOrWestColor = Enum.Color.RED_OR_YELLOW;
+        //         }
+        //         else if(isNorthSouthGreen == false){
+        //             northOrSouthColor = Enum.Color.RED_OR_YELLOW;
+        //             eastOrWestColor = Enum.Color.GREEN;
+        //         }
+        //         isNorthSouthGreen = !isNorthSouthGreen;
+        //     }
+        // }, 0, 20000);
     }
     
     public Enum.Color getStoplightColor(Enum.Direction direction){

@@ -76,16 +76,17 @@ class CrossIntersection implements Runnable {
                 car.timer = stoplightTimer.getCurrentTime();
                 System.out.println(car.toString() + " arriving");
                 //spin until the light is green
-                while(((car.originalDirection == Enum.Direction.NORTH || car.originalDirection == Enum.Direction.SOUTH) && stoplightTimer.northOrSouthColor == Enum.Color.RED_OR_YELLOW) ||
-                    ((car.originalDirection == Enum.Direction.EAST || car.originalDirection == Enum.Direction.WEST)&& stoplightTimer.eastOrWestColor == Enum.Color.RED_OR_YELLOW)){
+                // while(((car.originalDirection == Enum.Direction.NORTH || car.originalDirection == Enum.Direction.SOUTH) && stoplightTimer.northOrSouthColor == Enum.Color.RED_OR_YELLOW) ||
+                //     ((car.originalDirection == Enum.Direction.EAST || car.originalDirection == Enum.Direction.WEST)&& stoplightTimer.eastOrWestColor == Enum.Color.RED_OR_YELLOW)){
                     
-                    if((car.originalDirection.getNumber() + 1) % 4 != car.targetDirection.getNumber()){ //if it's not going right, we sleep
-                        Thread.sleep(50);
-                    }
-                    else{                                                                               //if going right, we break out
-                        break;
-                    }
-                }
+                //     if((car.originalDirection.getNumber() + 1) % 4 != car.targetDirection.getNumber()){ //if it's not going right, we sleep
+                //         Thread.sleep(50);
+                //     }
+                //     else{                                                                               //if going right, we break out
+                //         break;
+                //     }
+                // }
+                
                 car.arriveIntersection(intersection);
                 car.timer = stoplightTimer.getCurrentTime();
                 System.out.println(car.toString() + " crossing");
